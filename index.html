@@ -63,7 +63,6 @@
                 linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(238, 90, 36, 0.8) 50%, rgba(255, 159, 243, 0.8) 100%);
             color: white;
             text-align: center;
-            padding: 25px 20px;
             position: relative;
             overflow: hidden;
             flex-shrink: 0;
@@ -107,7 +106,7 @@
 
         .calendar-header h1 {
             margin: 0;
-            font-size: 2.2rem;
+            font-size: 2cqw;
             font-weight: 1000;
             background: linear-gradient(45deg, #fff, #ffeb3b);
             -webkit-background-clip: text;
@@ -151,14 +150,14 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 2rem;
-            max-width: 100%;
+            gap: 1rem;
+            width: 100%;
             margin: 0 auto;
         }
 
         .gallery-image {
-            width: 120px;
-            height: 120px;
+            width: 8%;
+            aspect-ratio: 1 / 1;
             object-fit: cover;
             border-radius: 50%;
             border: 3px solid rgba(255, 255, 255, 0.8);
@@ -420,7 +419,7 @@
             display: flex;
             flex-direction: column;
             /* 月份卡片 4:3 比例 */
-            /*aspect-ratio: 4 / 3;*/
+            aspect-ratio: 1.32 / 1;
             width: 100%;
             background-size: cover;
             background-position: center;
@@ -625,7 +624,7 @@
         /* 大屏幕適配 */
 
         .calendar-container {
-            width: 1600px;
+            width: 1440px;
             height: calc(1440px * 297 / 210);
         }
 
@@ -674,6 +673,10 @@
             .calendar-container {
                 width: 210mm;
                 height: 297mm;
+            }
+
+            .calendar-header h1{
+                font-size: 24pt;
             }
         }
     </style>
