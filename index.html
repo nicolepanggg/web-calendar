@@ -7,7 +7,6 @@
     <title>2026年香港年曆</title>
     <!-- 匯出功能所需的庫 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             box-sizing: border-box;
@@ -286,66 +285,7 @@
             transform: translateY(-1px);
         }
 
-        /* 載入動畫樣式 */
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
 
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes fadeInOut {
-
-            0%,
-            100% {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-
-            10%,
-            90% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid #333;
-            border-top: 3px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        /* 成功訊息動畫 */
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
 
         @keyframes fadeInUp {
             from {
@@ -520,12 +460,12 @@
         .days-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
+            gap: 0.1rem;
             flex: 1;
         }
 
         .day {
-            min-height: 30px;
+            /*min-height: 30px;*/
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -686,9 +626,6 @@
     <div class="export-buttons">
         <button class="export-btn" onclick="printCalendar()" title="直接列印年曆">
             🖨️ 列印年曆
-        </button>
-        <button class="export-btn" onclick="exportToPDF()" title="完整版面，適合分享">
-            📄 PDF格式
         </button>
         <button class="export-btn" onclick="showGoFullPageGuide()" title="學習如何使用 GoFullPage 擴展截取完整網頁">
             📄 GoFullPage 教學
@@ -986,10 +923,6 @@
                 libraries.push('html2canvas');
             }
 
-            if (typeof window.jspdf === 'undefined') {
-                libraries.push('jsPDF');
-            }
-
             if (libraries.length > 0) {
                 console.warn('以下庫未正確載入:', libraries);
                 // 可以在此添加重新載入的邏輯
@@ -1000,195 +933,6 @@
 
         // 延遲檢查以確保所有庫都有時間載入
         setTimeout(checkLibraries, 2000);
-
-        // 匯出為PDF功能 (完全還原版本)
-        async function exportToPDF() {
-            try {
-                console.log('開始PDF匯出...');
-
-                // 檢查jsPDF是否載入
-                if (typeof window.jspdf === 'undefined') {
-                    console.error('jsPDF未載入');
-                    alert('PDF匯出功能載入中，請稍後再試...');
-                    return;
-                }
-
-                console.log('jsPDF已載入，開始處理...');
-                showLoadingMessage('正在生成完整PDF...');
-
-                const element = document.querySelector('.calendar-container');
-                if (!element) {
-                    console.error('找不到日曆容器元素');
-                    hideLoadingMessage();
-                    alert('找不到日曆內容，無法生成PDF');
-                    return;
-                }
-
-                console.log('找到日曆元素，準備html2canvas...');
-
-                // 暫時隱藏匯出按鈕
-                const exportButtons = document.querySelector('.export-buttons');
-                const originalDisplay = exportButtons ? exportButtons.style.display : '';
-                if (exportButtons) {
-                    exportButtons.style.display = 'none';
-                }
-
-                // 等待DOM更新
-                await new Promise(resolve => setTimeout(resolve, 300));
-
-                console.log('開始html2canvas渲染...');
-
-                // 檢查html2canvas是否載入
-                if (typeof html2canvas === 'undefined') {
-                    console.error('html2canvas未載入');
-                    if (exportButtons) {
-                        exportButtons.style.display = originalDisplay;
-                    }
-                    hideLoadingMessage();
-                    alert('截圖功能載入中，請稍後再試...');
-                    return;
-                }
-
-                // 使用html2canvas將HTML轉換為canvas，保持完整外觀
-                const canvas = await html2canvas(element, {
-                    scale: 1.5, // 提高解析度但不太高避免記憶體問題
-                    useCORS: true,
-                    allowTaint: true,
-                    backgroundColor: 'white',
-                    logging: true, // 啟用logging來調試
-                    scrollX: 0,
-                    scrollY: 0,
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight
-                });
-
-                console.log('html2canvas完成，Canvas尺寸:', canvas.width, 'x', canvas.height);
-
-                // 恢復按鈕顯示
-                if (exportButtons) {
-                    exportButtons.style.display = originalDisplay;
-                }
-
-                const imgData = canvas.toDataURL('image/png', 0.9);
-                console.log('圖片數據生成完成');
-
-                // 使用jsPDF創建PDF
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-
-                const imgWidth = 210; // A4寬度(mm)
-                const pageHeight = 297; // A4高度(mm)
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-
-                let position = 0;
-
-                console.log('開始生成PDF，圖片高度:', imgHeight);
-
-                // 添加第一頁
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-
-                // 如果內容超過一頁，添加更多頁面
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-
-                console.log('PDF生成完成，準備下載...');
-
-                // 下載PDF
-                pdf.save('2026年香港年曆.pdf');
-                hideLoadingMessage();
-                showSuccessMessage('PDF匯出成功！與網頁顯示完全一致');
-
-            } catch (error) {
-                console.error('PDF匯出失敗:', error);
-                hideLoadingMessage();
-
-                // 恢復按鈕顯示
-                const exportButtons = document.querySelector('.export-buttons');
-                if (exportButtons) {
-                    exportButtons.style.display = '';
-                }
-
-                alert('PDF匯出失敗：' + error.message + '\n\n請檢查瀏覽器控制台以獲取更多信息。');
-            }
-        }
-
-        // 輔助函數：顯示載入訊息
-        function showLoadingMessage(message) {
-            // 移除現有的載入訊息
-            const existingModal = document.querySelector('.loading-modal');
-            if (existingModal) {
-                existingModal.remove();
-            }
-
-            const modal = document.createElement('div');
-            modal.className = 'loading-modal modal-overlay';
-            modal.style.cssText =
-                'position: fixed; top: 0; left: 0; width: 100%; height: 100%; ' +
-                'background: rgba(0,0,0,0.7); display: flex; align-items: center; ' +
-                'justify-content: center; z-index: 10002; backdrop-filter: blur(5px);';
-
-            modal.innerHTML = `
-                <div style="background: white; padding: 40px; border-radius: 20px; 
-                     box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
-                     font-family: Microsoft JhengHei, sans-serif; min-width: 300px;">
-                    <div class="loading-spinner" style="width: 50px; height: 50px; border: 3px solid #e0e0e0; 
-                         border-top: 3px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; 
-                         margin: 0 auto 20px;"></div>
-                    <p style="color: #333; font-size: 1.1rem; margin: 0; line-height: 1.5;">${message}</p>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-        }
-
-        // 輔助函數：隱藏載入訊息
-        function hideLoadingMessage() {
-            const modal = document.querySelector('.loading-modal');
-            if (modal) {
-                modal.remove();
-            }
-        }
-
-        // 輔助函數：顯示成功訊息
-        function showSuccessMessage(message) {
-            hideLoadingMessage();
-
-            const modal = document.createElement('div');
-            modal.className = 'success-modal modal-overlay';
-            modal.style.cssText =
-                'position: fixed; top: 0; left: 0; width: 100%; height: 100%; ' +
-                'background: rgba(0,0,0,0.5); display: flex; align-items: center; ' +
-                'justify-content: center; z-index: 10002; backdrop-filter: blur(3px);';
-
-            modal.innerHTML = `
-                <div style="background: white; padding: 40px; border-radius: 20px; 
-                     box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
-                     font-family: Microsoft JhengHei, sans-serif; max-width: 400px;">
-                    <div style="color: #28a745; font-size: 3rem; margin-bottom: 20px;">✅</div>
-                    <p style="color: #333; font-size: 1.1rem; margin: 0 0 30px 0; line-height: 1.5;">${message}</p>
-                    <button onclick="this.closest('.modal-overlay').remove()" 
-                            style="background: #28a745; color: white; border: none; padding: 12px 30px; 
-                                   border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 600;">
-                        確定
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-
-            // 3秒後自動關閉
-            setTimeout(() => {
-                if (modal && modal.parentNode) {
-                    modal.remove();
-                }
-            }, 3000);
-        }
 
         // 列印年曆功能
         function printCalendar() {
@@ -1310,9 +1054,6 @@
 
             document.body.appendChild(modal);
         }
-
-
-
 
         // 增強的網頁載入完成處理
         document.addEventListener('DOMContentLoaded', function () {
