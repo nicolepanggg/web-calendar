@@ -688,9 +688,6 @@
             }
 
             /* 高解析度文字渲染 */
-            .calendar-header h1 {
-                
-            }
             
             .month-title {
                 -webkit-font-smoothing: antialiased;
@@ -754,6 +751,26 @@
                 <option value="rainbow.png">rainbow.png</option>
                 <option value="Sunset-orange.jpg">Sunset-orange.jpg</option>
             </select>
+        </div>
+        <div class="bg-selector" style="margin-left:10px;">
+            <label class="bg-label" for="containerBgSelect">🖼️ 容器背景:</label>
+            <select class="bg-dropdown" id="containerBgSelect">
+                <option value="none" selected>無</option>
+                <option value="ocean.jpg">ocean.jpg</option>
+                <option value="pink.jpg">pink.jpg</option>
+                <option value="purple.jpg">purple.jpg</option>
+                <option value="rainbow-2.jpg">rainbow-2.jpg</option>
+                <option value="rainbow.png">rainbow.png</option>
+                <option value="Sunset-orange.jpg">Sunset-orange.jpg</option>
+            </select>
+        </div>
+        <div class="bg-selector" style="margin-left:10px;">
+            <label class="bg-label" for="containerBgUpload">⬆️ 上載容器背景:</label>
+            <input id="containerBgUpload" type="file" accept="image/*" style="background:transparent;border:none;cursor:pointer;" />
+        </div>
+        <div class="bg-selector" style="margin-left:10px;">
+            <label class="bg-label" for="monthTitleColorPicker">🔠 月份標題背景顏色:</label>
+            <input id="monthTitleColorPicker" type="color" value="#ffffff" style="width:40px;height:30px;border:none;padding:0;" />
         </div>
         <!-- 背景上傳與 H1 顏色選擇 -->
         <div class="bg-selector" style="margin-left:10px;">
@@ -1082,6 +1099,13 @@
                 const monthTitle = document.createElement('div');
                 monthTitle.className = 'month-title';
                 monthTitle.textContent = monthNames[month];
+                // 如果使用者已選擇月份標題背景顏色，套用到新建立的 month-title
+                if (window.__selectedMonthTitleBgColor) {
+                    monthTitle.style.background = window.__selectedMonthTitleBgColor;
+                    monthTitle.style.padding = '6px 8px';
+                    monthTitle.style.borderRadius = '6px';
+                    monthTitle.style.color = '#fff';
+                }
 
                 const weekdaysDiv = document.createElement('div');
                 weekdaysDiv.className = 'weekdays';
@@ -1228,6 +1252,34 @@
             container.classList.add(`size-${size}`);
             
             console.log('已更新容器尺寸為:', size);
+        }
+
+        // 更新 calendar-container 背景
+        function updateContainerBackground(bgValue) {
+            const container = document.querySelector('.calendar-container');
+            if (!container) return;
+
+            let imageUrl = '';
+            if (!bgValue || bgValue === 'none') {
+                // 恢復預設底部背景
+                container.style.backgroundImage = "url('bg/footer.png')";
+                container.style.backgroundRepeat = 'no-repeat';
+                container.style.backgroundPosition = 'bottom center';
+                container.style.backgroundSize = 'contain';
+                return;
+            }
+
+            if (bgValue.startsWith('data:')) {
+                imageUrl = bgValue;
+            } else {
+                imageUrl = `background/${bgValue}`;
+            }
+
+            // 將圖片設為容器的主背景（覆蓋原本的底部footer背景）
+            container.style.backgroundImage = `url('${imageUrl}')`;
+            container.style.backgroundRepeat = 'no-repeat';
+            container.style.backgroundPosition = 'center top';
+            container.style.backgroundSize = 'cover';
         }
 
 
@@ -1479,6 +1531,40 @@
                 });
             }
 
+                // 處理 calendar-container 背景選擇與上載
+                const containerBgSelect = document.getElementById('containerBgSelect');
+                const containerBgUpload = document.getElementById('containerBgUpload');
+                if (containerBgSelect) {
+                    containerBgSelect.addEventListener('change', function () {
+                        updateContainerBackground(this.value);
+                    });
+                }
+
+                if (containerBgUpload) {
+                    containerBgUpload.addEventListener('change', function (e) {
+                        const file = e.target.files && e.target.files[0];
+                        if (!file) return;
+                        if (!file.type.startsWith('image/')) {
+                            alert('請上載圖片檔案（jpg/png/gif 等）');
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function (ev) {
+                            const dataUrl = ev.target.result;
+                            // 新增選項並選中
+                            if (containerBgSelect) {
+                                const opt = document.createElement('option');
+                                opt.value = dataUrl;
+                                opt.textContent = `上載: ${file.name}`;
+                                containerBgSelect.insertBefore(opt, containerBgSelect.firstChild);
+                                containerBgSelect.value = dataUrl;
+                            }
+                            updateContainerBackground(dataUrl);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
             // 處理 H1 顏色選擇器
             const h1ColorPicker = document.getElementById('h1ColorPicker');
             if (h1ColorPicker) {
@@ -1494,6 +1580,24 @@
                         h1.style.color = this.value;
                         h1.style.webkitTextFillColor = this.value;
                     }
+                });
+            }
+
+            // 處理月份標題背景顏色選擇器
+            const monthTitleColorPicker = document.getElementById('monthTitleColorPicker');
+            // 初始化全域變數 (背景色)
+            window.__selectedMonthTitleBgColor = (monthTitleColorPicker && monthTitleColorPicker.value) || '#ffffff';
+            if (monthTitleColorPicker) {
+                monthTitleColorPicker.addEventListener('input', function () {
+                    window.__selectedMonthTitleBgColor = this.value;
+                    // 套用到現有的 .month-title
+                    document.querySelectorAll('.month-title').forEach(el => {
+                        el.style.background = this.value;
+                        el.style.padding = '6px 8px';
+                        el.style.borderRadius = '6px';
+                        // 如果背景顏色較淺，保留白色文字，否則自動切換黑/白（簡單處理）
+                        el.style.color = '#fff';
+                    });
                 });
             }
         });
