@@ -937,7 +937,7 @@
             '2026-01-17': '農曆新年初一',
             '2026-01-18': '農曆新年初二',
             '2026-01-19': '農曆新年初三',
-            '2026-04-17': '耶穌受難節',
+            '2026-04-17': '耶穌受\n難節',
             '2026-04-18': '耶穌受難節翌日',
             '2026-04-20': '復活節星期一',
             '2026-05-01': '勞動節',
@@ -945,7 +945,7 @@
             '2026-06-16': '端午節',
             '2026-07-01': '香港特別行政區成立紀念日',
             '2026-10-01': '國慶日',
-            '2026-10-06': '中秋節<br/>翌日',
+            '2026-10-06': '中秋節\n翌日',
             '2026-10-09': '重陽節',
             '2026-12-25': '聖誕節',
             '2026-12-26': '節禮日'
@@ -1028,11 +1028,21 @@
                     // 檢查是否為假期
                     if (holidays[dateString]) {
                         dayDiv.classList.add('holiday');
-                        dayDiv.title = holidays[dateString];
+                        dayDiv.title = holidays[dateString].replace('\n', ' ');
 
                         const holidayName = document.createElement('div');
                         holidayName.className = 'holiday-name';
-                        holidayName.textContent = holidays[dateString];
+                        
+                        // 處理換行符號，將 \n 轉換為實際的換行顯示
+                        const holidayText = holidays[dateString];
+                        if (holidayText.includes('\n')) {
+                            // 如果包含換行符號，使用 innerHTML 並將 \n 轉換為 <br>
+                            holidayName.innerHTML = holidayText.replace(/\n/g, '<br>');
+                        } else {
+                            // 如果不包含換行符號，使用 textContent
+                            holidayName.textContent = holidayText;
+                        }
+                        
                         dayDiv.appendChild(holidayName);
                     }
 
