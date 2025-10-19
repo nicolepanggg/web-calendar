@@ -405,6 +405,26 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            /* 動畫相關 */
+            opacity: 0;
+            transform: translateY(50px);
+            animation-fill-mode: forwards;
+        }
+
+        /* 淡入動畫 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .month-card.fade-in {
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
         }
 
         .month-card::after {
@@ -434,7 +454,7 @@
             transition: left 0.5s;
         }
 
-        .month-card:hover {
+        .month-card.fade-in:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.1);
         }
@@ -698,11 +718,11 @@
                         delay += 0.1;
                         
                         // 當載入了足夠的圖片後，生成日曆
-                        if (loadedCount >= 3) {
+                        /*if (loadedCount >= 3) {
                             setTimeout(() => {
                                 generateCalendar();
                             }, 1000);
-                        }
+                        }*/
                     }, index * 50);
                 };
                 img.onerror = function () {
@@ -884,6 +904,11 @@
                 monthCard.appendChild(weekdaysDiv);
                 monthCard.appendChild(daysGrid);
                 monthsGrid.appendChild(monthCard);
+                
+                // 為每個月份卡片添加延遲的淡入動畫
+                setTimeout(() => {
+                    monthCard.classList.add('fade-in');
+                }, month * 150); // 每個卡片延遲 150ms
             }
         }
 
