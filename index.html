@@ -736,7 +736,7 @@
 <body>
     <div class="export-buttons">
         <div class="print-size-selector">
-            <span class="print-size-label">📏 顯示尺寸:</span>
+            <span class="print-size-label">📏 列印尺寸:</span>
             <select class="print-size-dropdown" id="printSizeSelect">
                 <option value="A4" selected>A4 (210×297mm)</option>
                 <option value="A3">A3 (297×420mm)</option>
@@ -746,8 +746,8 @@
         <button class="export-btn" onclick="printCalendar()" title="300 DPI 高解析度列印">
             🖨️ 300 DPI 列印
         </button>
-        <button class="export-btn" onclick="showGoFullPageGuide()" title="學習如何使用 GoFullPage 擴展截取完整網頁">
-            📄 GoFullPage 教學
+        <button class="export-btn" onclick="showPrintGuide()" title="學習如何列印年曆和設定尺寸">
+            � 列印教學
         </button>
     </div>
     <main class="calendar-container">
@@ -1233,8 +1233,8 @@
             }, 3000);
         }
 
-        // GoFullPage 擴展教學指南
-        function showGoFullPageGuide() {
+        // 列印教學指南
+        function showPrintGuide() {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
             modal.style.cssText =
@@ -1245,82 +1245,102 @@
             modal.innerHTML = `
                 <div class="modal-content" style="background: white; padding: 50px; border-radius: 25px; 
                      box-shadow: 0 30px 80px rgba(0,0,0,0.4); max-width: 750px; width: 95%; max-height: 90vh; 
-                     overflow-y: auto; font-family: Microsoft JhengHei, sans-serif; text-align: center;">
+                     overflow-y: auto; font-family: Microsoft JhengHei, sans-serif; text-align: center; position: relative;">
+                    
+                    <!-- 關閉按鈕 -->
+                    <button onclick="this.closest('.modal-overlay').remove()" 
+                            style="position: absolute; top: 20px; right: 20px; 
+                                   background: rgba(108, 117, 125, 0.1); border: none; 
+                                   width: 40px; height: 40px; border-radius: 50%; 
+                                   color: #6c757d; font-size: 18px; font-weight: bold; 
+                                   cursor: pointer; display: flex; align-items: center; 
+                                   justify-content: center; transition: all 0.3s ease;
+                                   z-index: 1;"
+                            onmouseover="this.style.background='rgba(220, 53, 69, 0.1)'; this.style.color='#dc3545';" 
+                            onmouseout="this.style.background='rgba(108, 117, 125, 0.1)'; this.style.color='#6c757d';"
+                            title="關閉教學視窗">
+                        ×
+                    </button>
                     
                     <div style="margin-bottom: 30px;">
-                        <h2 style="color: #4285f4; margin-bottom: 15px; font-size: 2rem;">📸 GoFullPage 完整網頁截圖</h2>
-                        <p style="color: #666; font-size: 1.1rem;">最專業的網頁截圖擴展，支援完整頁面捕獲</p>
+                        <h2 style="color: #667eea; margin-bottom: 15px; font-size: 2rem;">�️ 年曆列印教學</h2>
+                        <p style="color: #666; font-size: 1.1rem;">完整的列印設定指南，獲得最佳列印效果</p>
                     </div>
 
-                    <!-- 擴展介紹 -->
+                    <!-- 尺寸選擇說明 -->
                     <div style="background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 30px; border-radius: 15px; margin: 25px 0; text-align: left;">
-                        <h3 style="color: #495057; margin-bottom: 20px; text-align: center;">🌟 GoFullPage 特色</h3>
+                        <h3 style="color: #495057; margin-bottom: 20px; text-align: center;">📏 尺寸選擇</h3>
                         <ul style="font-size: 1.1rem; line-height: 1.8; color: #333; list-style: none; padding: 0;">
-                            <li style="margin-bottom: 12px;">✨ <strong>完整頁面截圖</strong> - 自動滾動並拼接整個網頁</li>
-                            <li style="margin-bottom: 12px;">🎯 <strong>高品質輸出</strong> - 支援高解析度 PNG 格式</li>
-                            <li style="margin-bottom: 12px;">⚡ <strong>一鍵操作</strong> - 點擊即可完成截圖</li>
-                            <li style="margin-bottom: 12px;">📱 <strong>智能處理</strong> - 自動處理動態內容和滾動</li>
-                            <li style="margin-bottom: 12px;">🎨 <strong>保持樣式</strong> - 完整保留網頁視覺效果</li>
+                            <li style="margin-bottom: 12px;">📄 <strong>A4 (210×297mm)</strong> - 標準尺寸，家用印表機常用</li>
+                            <li style="margin-bottom: 12px;">📄 <strong>A3 (297×420mm)</strong> - 較大尺寸，更清晰的細節</li>
+                            <li style="margin-bottom: 12px;">📄 <strong>A2 (420×594mm)</strong> - 大型尺寸，專業列印使用</li>
+                            <li style="margin-bottom: 12px;">⚙️ <strong>動態調整</strong> - 螢幕顯示會隨選擇變化</li>
+                            <li style="margin-bottom: 12px;">� <strong>300 DPI</strong> - 高解析度列印品質</li>
                         </ul>
                     </div>
 
-                    <!-- 安裝步驟 -->
+                    <!-- 列印步驟 -->
                     <div style="background: linear-gradient(135deg, #e3f2fd, #bbdefb); padding: 30px; border-radius: 15px; margin: 25px 0;">
-                        <h3 style="color: #1976d2; margin-bottom: 25px;">📦 安裝步驟</h3>
+                        <h3 style="color: #1976d2; margin-bottom: 25px;">�️ 列印步驟</h3>
                         <div style="text-align: left;">
                             <div style="display: flex; align-items: center; margin-bottom: 15px; padding: 15px; background: white; border-radius: 10px;">
                                 <div style="background: #4285f4; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">1</div>
                                 <div>
-                                    <div style="font-weight: 600; color: #1976d2;">點擊下方「前往 Chrome 商店」按鈕</div>
-                                    <div style="color: #666; font-size: 0.9rem;">開啟 GoFullPage 擴展頁面</div>
+                                    <div style="font-weight: 600; color: #1976d2;">選擇顯示尺寸</div>
+                                    <div style="color: #666; font-size: 0.9rem;">在上方下拉選單選擇A4、A3或A2</div>
                                 </div>
                             </div>
                             
                             <div style="display: flex; align-items: center; margin-bottom: 15px; padding: 15px; background: white; border-radius: 10px;">
                                 <div style="background: #34a853; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">2</div>
                                 <div>
-                                    <div style="font-weight: 600; color: #1976d2;">點擊「加到 Chrome」</div>
-                                    <div style="color: #666; font-size: 0.9rem;">確認安裝 GoFullPage 擴展</div>
+                                    <div style="font-weight: 600; color: #1976d2;">點擊「🖨️ 300 DPI 列印」</div>
+                                    <div style="color: #666; font-size: 0.9rem;">開啟瀏覽器列印對話框</div>
                                 </div>
                             </div>
                             
                             <div style="display: flex; align-items: center; padding: 15px; background: white; border-radius: 10px;">
                                 <div style="background: #ea4335; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; font-weight: bold;">3</div>
                                 <div>
-                                    <div style="font-weight: 600; color: #1976d2;">重新載入此頁面</div>
-                                    <div style="color: #666; font-size: 0.9rem;">按 F5 重新整理頁面</div>
+                                    <div style="font-weight: 600; color: #1976d2;">確認列印設定</div>
+                                    <div style="color: #666; font-size: 0.9rem;">檢查尺寸設定並開始列印</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 使用方法 -->
+                    <!-- 列印設定建議 -->
                     <div style="background: linear-gradient(135deg, #f3e5f5, #e1bee7); padding: 30px; border-radius: 15px; margin: 25px 0;">
-                        <h3 style="color: #7b1fa2; margin-bottom: 25px;">🚀 使用方法</h3>
+                        <h3 style="color: #7b1fa2; margin-bottom: 25px;">⚙️ 列印設定建議</h3>
                         <div style="text-align: left;">
                             <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
-                                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 10px;">方法一：工具列按鈕</div>
-                                <div style="color: #666;">在瀏覽器工具列找到 GoFullPage 圖示，點擊即可開始截圖</div>
+                                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 10px;">紙張設定</div>
+                                <div style="color: #666;">選擇對應的紙張尺寸（A4/A3/A2），確保印表機支援該尺寸</div>
+                            </div>
+                            
+                            <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 15px;">
+                                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 10px;">列印品質</div>
+                                <div style="color: #666;">建議選擇「高品質」或「最佳品質」，獲得清晰的文字和圖片</div>
                             </div>
                             
                             <div style="background: white; padding: 20px; border-radius: 12px;">
-                                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 10px;">方法二：右鍵選單</div>
-                                <div style="color: #666;">在網頁空白處按右鍵，選擇「GoFullPage - Full Page Screenshots」</div>
+                                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 10px;">方向設定</div>
+                                <div style="color: #666;">選擇「縱向/直向 (Portrait)」，年曆採用直向設計</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 按鈕區域 -->
                     <div style="margin-top: 35px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <a href="https://chromewebstore.google.com/detail/gofullpage-full-page-scre/fdpohaocaechififmbbbbbknoalclacl?hl=en" 
-                           target="_blank" rel="noopener noreferrer"
-                           style="background: linear-gradient(135deg, #4285f4, #1a73e8); color: white; text-decoration: none; 
-                                  padding: 18px 35px; border-radius: 12px; font-weight: 600; font-size: 1.1rem; 
-                                  display: flex; align-items: center; gap: 10px; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(66,133,244,0.3);"
-                           onmouseover="this.style.transform='translateY(-2px)'" 
-                           onmouseout="this.style.transform='translateY(0)'">
-                            🏪 前往 Chrome 商店
-                        </a>
+                        <button onclick="this.closest('.modal-overlay').remove(); printCalendar();" 
+                                style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; 
+                                       padding: 18px 35px; border-radius: 12px; font-weight: 600; font-size: 1.1rem; 
+                                       display: flex; align-items: center; gap: 10px; transition: transform 0.2s; 
+                                       box-shadow: 0 4px 15px rgba(102,126,234,0.3); cursor: pointer;"
+                                onmouseover="this.style.transform='translateY(-2px)'" 
+                                onmouseout="this.style.transform='translateY(0)'">
+                            🖨️ 立即列印
+                        </button>
                         
                         <button onclick="this.closest('.modal-overlay').remove()" 
                                 style="background: #6c757d; color: white; border: none; padding: 18px 35px; 
@@ -1336,17 +1356,34 @@
                     <div style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 20px; border-radius: 10px; margin-top: 25px; text-align: left;">
                         <div style="display: flex; align-items: center; margin-bottom: 10px;">
                             <span style="font-size: 1.5rem; margin-right: 10px;">💡</span>
-                            <strong style="color: #856404;">專業提示</strong>
+                            <strong style="color: #856404;">列印小貼士</strong>
                         </div>
                         <div style="color: #856404; line-height: 1.6;">
-                            GoFullPage 會自動處理網頁滾動和拼接，確保截圖包含完整內容。
-                            截圖完成後會自動下載 PNG 檔案到您的下載資料夾。
+                            • 建議使用彩色印表機以完整呈現年曆色彩<br>
+                            • A3和A2尺寸可能需要專業印表機或影印店<br>
+                            • 列印前可先使用「預覽列印」功能檢查效果
                         </div>
                     </div>
                 </div>
             `;
 
             document.body.appendChild(modal);
+            
+            // 點擊背景關閉模態窗口
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            // 按ESC鍵關閉模態窗口
+            const handleEscKey = function(e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscKey);
+                }
+            };
+            document.addEventListener('keydown', handleEscKey);
         }
 
         // 增強的網頁載入完成處理
