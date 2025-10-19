@@ -755,13 +755,15 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: rgba(0,0,0,0.8);
+                background: rgba(0,0,0,0);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 z-index: 1000;
                 cursor: pointer;
                 text-align: center;
+                opacity: 0;
+                transition: all 0.4s ease;
             `;
 
             const img = document.createElement('img');
@@ -779,6 +781,9 @@
                 position: relative;
                 display: inline-block;
                 max-width: 24%;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             `;
 
             // 創建關閉按鈕
@@ -821,24 +826,53 @@
             modal.appendChild(imgContainer);
             document.body.appendChild(modal);
 
+            // 觸發 fadeIn 動畫
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.style.background = 'rgba(0,0,0,0.8)';
+                imgContainer.style.opacity = '1';
+                imgContainer.style.transform = 'scale(1)';
+            }, 10);
+
             // 點擊背景關閉
             modal.addEventListener('click', function (e) {
                 if (e.target === modal) {
-                    document.body.removeChild(modal);
+                    // fadeOut 動畫
+                    modal.style.opacity = '0';
+                    modal.style.background = 'rgba(0,0,0,0)';
+                    imgContainer.style.opacity = '0';
+                    imgContainer.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        document.body.removeChild(modal);
+                    }, 400);
                 }
             });
 
             // 點擊關閉按鈕關閉
             closeDiv.addEventListener('click', function (e) {
                 e.stopPropagation();
-                document.body.removeChild(modal);
+                // fadeOut 動畫
+                modal.style.opacity = '0';
+                modal.style.background = 'rgba(0,0,0,0)';
+                imgContainer.style.opacity = '0';
+                imgContainer.style.transform = 'scale(0.8)';
+                setTimeout(() => {
+                    document.body.removeChild(modal);
+                }, 400);
             });
 
             // 按 ESC 鍵關閉
             const handleKeyDown = function(e) {
                 if (e.key === 'Escape') {
-                    document.body.removeChild(modal);
-                    document.removeEventListener('keydown', handleKeyDown);
+                    // fadeOut 動畫
+                    modal.style.opacity = '0';
+                    modal.style.background = 'rgba(0,0,0,0)';
+                    imgContainer.style.opacity = '0';
+                    imgContainer.style.transform = 'scale(0.8)';
+                    setTimeout(() => {
+                        document.body.removeChild(modal);
+                        document.removeEventListener('keydown', handleKeyDown);
+                    }, 400);
                 }
             };
             document.addEventListener('keydown', handleKeyDown);
