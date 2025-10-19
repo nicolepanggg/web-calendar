@@ -34,7 +34,8 @@
         .calendar-container {
             /* A4 比例 1440px 寬度 */
             width: 1440px;
-            height: calc(1440px * 297 / 210); /* 根據A4比例計算高度 = 2040px */
+            height: calc(1440px * 297 / 210);
+            /* 根據A4比例計算高度 = 2040px */
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -48,7 +49,7 @@
             display: flex;
             flex-direction: column;
             background: #ffffff;
-            background: linear-gradient(180deg,rgba(255, 255, 255, 1) 66%, rgba(255, 235, 243, 1) 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 1) 66%, rgba(255, 235, 243, 1) 100%);
             /* 底部背景圖片 */
             background-image: url('bg/footer.svg');
             background-repeat: no-repeat;
@@ -121,6 +122,7 @@
             100% {
                 filter: brightness(1) hue-rotate(0deg);
             }
+
             50% {
                 filter: brightness(1.2) hue-rotate(10deg);
             }
@@ -206,6 +208,7 @@
                 transform: scale(0.8);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -286,13 +289,28 @@
 
         /* 載入動畫樣式 */
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         @keyframes fadeInOut {
-            0%, 100% { opacity: 0; transform: scale(0.8); }
-            10%, 90% { opacity: 1; transform: scale(1); }
+
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            10%,
+            90% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .loading-spinner {
@@ -311,6 +329,7 @@
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
@@ -322,6 +341,7 @@
                 transform: translateX(0);
                 opacity: 1;
             }
+
             to {
                 transform: translateX(100%);
                 opacity: 0;
@@ -384,7 +404,7 @@
             grid-template-rows: repeat(4, auto);
             gap: 8px;
             flex: 1;
-            
+
             /* 確保12個月分4行排列，每個卡片保持4:3比例 */
             align-content: start;
         }
@@ -417,6 +437,7 @@
                 opacity: 0;
                 transform: translateY(50px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -438,7 +459,7 @@
             z-index: 1;
         }
 
-        .month-card > * {
+        .month-card>* {
             position: relative;
             z-index: 2;
         }
@@ -603,32 +624,66 @@
 
         /* 大屏幕適配 */
 
+        .calendar-container {
+            width: 1600px;
+            height: calc(1440px * 297 / 210);
+        }
+
+        .months-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            padding: 40px;
+            width: 80%;
+            margin: auto;
+        }
+
+        .calendar-header h1 {
+            font-size: 3.5rem;
+        }
+
+        .month-title {
+            font-size: 1.6rem;
+            padding: 5px;
+        }
+
+        /* 列印樣式 */
+        @media print {
+
+            /* 隱藏不需要列印的元素 */
+            .export-buttons {
+                display: none !important;
+            }
+
+            /* 設置頁面邊距 */
+            @page {
+                margin: 0;
+                size: A4 portrait;
+            }
+
+            .content {
+                break-inside: avoid;
+            }
+
+            /* 確保整個日曆容器適合頁面 */
+            body {
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
             .calendar-container {
-                width: 1600px;
-                height: calc(1440px * 297 / 210);
+                width: 210mm;
+                height: 297mm;
             }
-            
-            .months-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 50px;
-                padding: 40px;
-                width: 80%;
-                margin: auto;
-            }
-            
-            .calendar-header h1 {
-                font-size: 3.5rem;
-            }
-            
-            .month-title {
-                font-size: 1.6rem;
-                padding: 5px;
-            }      
+        }
     </style>
 </head>
 
 <body>
     <div class="export-buttons">
+        <button class="export-btn" onclick="printCalendar()" title="直接列印年曆">
+            🖨️ 列印年曆
+        </button>
         <button class="export-btn" onclick="exportToPDF()" title="完整版面，適合分享">
             📄 PDF格式
         </button>
@@ -718,7 +773,7 @@
                         gallery.appendChild(galleryImg);
                         loadedCount++;
                         delay += 0.1;
-                        
+
                         // 當載入了足夠的圖片後，生成日曆
                         /*if (loadedCount >= 3) {
                             setTimeout(() => {
@@ -821,11 +876,11 @@
 
             // 獲取可用的背景圖片
             const galleryImages = document.querySelectorAll('.gallery-image');
-            
+
             for (let month = 0; month < 12; month++) {
                 const monthCard = document.createElement('div');
                 monthCard.className = 'month-card';
-                
+
                 // 為每個月份卡片設置背景圖片
                 if (galleryImages.length > 0) {
                     const imageIndex = month % galleryImages.length;
@@ -906,7 +961,7 @@
                 monthCard.appendChild(weekdaysDiv);
                 monthCard.appendChild(daysGrid);
                 monthsGrid.appendChild(monthCard);
-                
+
                 // 為每個月份卡片添加延遲的淡入動畫
                 setTimeout(() => {
                     monthCard.classList.add('fade-in');
@@ -923,15 +978,15 @@
         // 檢查必要的庫是否載入完成
         function checkLibraries() {
             const libraries = [];
-            
+
             if (typeof html2canvas === 'undefined') {
                 libraries.push('html2canvas');
             }
-            
+
             if (typeof window.jspdf === 'undefined') {
                 libraries.push('jsPDF');
             }
-            
+
             if (libraries.length > 0) {
                 console.warn('以下庫未正確載入:', libraries);
                 // 可以在此添加重新載入的邏輯
@@ -947,7 +1002,7 @@
         async function exportToPDF() {
             try {
                 console.log('開始PDF匯出...');
-                
+
                 // 檢查jsPDF是否載入
                 if (typeof window.jspdf === 'undefined') {
                     console.error('jsPDF未載入');
@@ -1070,11 +1125,11 @@
 
             const modal = document.createElement('div');
             modal.className = 'loading-modal modal-overlay';
-            modal.style.cssText = 
+            modal.style.cssText =
                 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; ' +
                 'background: rgba(0,0,0,0.7); display: flex; align-items: center; ' +
                 'justify-content: center; z-index: 10002; backdrop-filter: blur(5px);';
-            
+
             modal.innerHTML = `
                 <div style="background: white; padding: 40px; border-radius: 20px; 
                      box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
@@ -1085,7 +1140,7 @@
                     <p style="color: #333; font-size: 1.1rem; margin: 0; line-height: 1.5;">${message}</p>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
         }
 
@@ -1100,14 +1155,14 @@
         // 輔助函數：顯示成功訊息
         function showSuccessMessage(message) {
             hideLoadingMessage();
-            
+
             const modal = document.createElement('div');
             modal.className = 'success-modal modal-overlay';
-            modal.style.cssText = 
+            modal.style.cssText =
                 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; ' +
                 'background: rgba(0,0,0,0.5); display: flex; align-items: center; ' +
                 'justify-content: center; z-index: 10002; backdrop-filter: blur(3px);';
-            
+
             modal.innerHTML = `
                 <div style="background: white; padding: 40px; border-radius: 20px; 
                      box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center;
@@ -1121,9 +1176,9 @@
                     </button>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
-            
+
             // 3秒後自動關閉
             setTimeout(() => {
                 if (modal && modal.parentNode) {
@@ -1132,15 +1187,20 @@
             }, 3000);
         }
 
+        // 列印年曆功能
+        function printCalendar() {
+            window.print();
+        }
+
         // GoFullPage 擴展教學指南
         function showGoFullPageGuide() {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
-            modal.style.cssText = 
+            modal.style.cssText =
                 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; ' +
                 'background: rgba(0,0,0,0.4); display: flex; align-items: center; ' +
                 'justify-content: center; z-index: 10001; backdrop-filter: blur(3px);';
-            
+
             modal.innerHTML = `
                 <div class="modal-content" style="background: white; padding: 50px; border-radius: 25px; 
                      box-shadow: 0 30px 80px rgba(0,0,0,0.4); max-width: 750px; width: 95%; max-height: 90vh; 
@@ -1244,7 +1304,7 @@
                     </div>
                 </div>
             `;
-            
+
             document.body.appendChild(modal);
         }
 
@@ -1252,11 +1312,12 @@
 
 
         // 增強的網頁載入完成處理
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 先載入圖片，圖片載入完成後會自動生成日曆
             loadGalleryImages();
         });
 
     </script>
 </body>
+
 </html>
