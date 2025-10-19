@@ -331,7 +331,7 @@
         }
 
         /* 印刷尺寸選擇器樣式 */
-        .print-size-selector {
+        .print-size-selector, .bg-selector {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -349,14 +349,14 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
         }
 
-        .print-size-label {
+        .print-size-label, .bg-label {
             font-size: 0.9rem;
             font-weight: 600;
             color: #667eea;
             white-space: nowrap;
         }
 
-        .print-size-dropdown {
+        .print-size-dropdown, .bg-dropdown {
             background: transparent;
             border: none;
             font-size: 0.9rem;
@@ -743,6 +743,27 @@
                 <option value="A2">A2 (420×594mm)</option>
             </select>
         </div>
+        <div class="bg-selector" style="margin-left:10px;">
+            <span class="bg-label">🎨 背景主題:</span>
+            <select class="bg-dropdown" id="bgSelect">
+                <option value="PhotoshopExtension_Image.png" selected>預設背景</option>
+                <option value="ocean.jpg">ocean.jpg</option>
+                <option value="pink.jpg">pink.jpg</option>
+                <option value="purple.jpg">purple.jpg</option>
+                <option value="rainbow-2.jpg">rainbow-2.jpg</option>
+                <option value="rainbow.png">rainbow.png</option>
+                <option value="Sunset-orange.jpg">Sunset-orange.jpg</option>
+            </select>
+        </div>
+        <!-- 背景上傳與 H1 顏色選擇 -->
+        <div class="bg-selector" style="margin-left:10px;">
+            <label class="bg-label" for="bgUploadInput">⬆️ 上載背景:</label>
+            <input id="bgUploadInput" type="file" accept="image/*" style="background:transparent;border:none;cursor:pointer;" />
+        </div>
+        <div class="bg-selector" style="margin-left:10px;">
+            <label class="bg-label" for="h1ColorPicker">🔤 標題顏色:</label>
+            <input id="h1ColorPicker" type="color" value="#ffffff" style="width:40px;height:30px;border:none;padding:0;" />
+        </div>
         <button class="export-btn" onclick="printCalendar()" title="300 DPI 高解析度列印">
             🖨️ 300 DPI 列印
         </button>
@@ -781,6 +802,19 @@
     </main>
 
     <script>
+        // 切換 calendar-header 背景圖片
+        function updateHeaderBackground(bgImage) {
+            const header = document.querySelector('.calendar-header');
+            let imageUrl = '';
+            // 如果是 data URL (上載的檔案)，直接使用；否則從 background 資料夾載入
+            if (bgImage.startsWith('data:')) {
+                imageUrl = bgImage;
+            } else {
+                imageUrl = `background/${bgImage}`;
+            }
+            const backgroundStyle = `url('${imageUrl}') center/cover, linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(238, 90, 36, 0.8) 50%, rgba(255, 159, 243, 0.8) 100%)`;
+            header.style.background = backgroundStyle;
+        }
         // 動態載入資料夾中的圖片
         function loadGalleryImages() {
             const gallery = document.getElementById('imagesGallery');
@@ -1405,6 +1439,62 @@
                 });
                 
                 console.log('列印尺寸選擇器已初始化');
+            }
+
+            // 初始化背景主題選擇器
+            const bgSelect = document.getElementById('bgSelect');
+            if (bgSelect) {
+                bgSelect.addEventListener('change', function() {
+                    updateHeaderBackground(this.value);
+                });
+                // 預設載入
+                updateHeaderBackground(bgSelect.value);
+            }
+
+            // 處理使用者上載背景圖片
+            const bgUploadInput = document.getElementById('bgUploadInput');
+            if (bgUploadInput) {
+                bgUploadInput.addEventListener('change', function (e) {
+                    const file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    // 只接受影像檔
+                    if (!file.type.startsWith('image/')) {
+                        alert('請上載圖片檔案（jpg/png/gif 等）');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        const dataUrl = ev.target.result;
+                        // 將上載的圖片加入下拉選單並選中
+                        const option = document.createElement('option');
+                        option.value = dataUrl;
+                        option.textContent = `上載: ${file.name}`;
+                        // 把它放在最前面
+                        bgSelect.insertBefore(option, bgSelect.firstChild);
+                        bgSelect.value = dataUrl;
+                        updateHeaderBackground(dataUrl);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // 處理 H1 顏色選擇器
+            const h1ColorPicker = document.getElementById('h1ColorPicker');
+            if (h1ColorPicker) {
+                h1ColorPicker.addEventListener('input', function () {
+                    const h1 = document.querySelector('.calendar-header h1');
+                    if (h1) {
+                        // 移除原本的背景漸層裁切文本效果，直接套用純色
+                        h1.style.background = 'none';
+                        h1.style.backgroundImage = 'none';
+                        h1.style.webkitBackgroundClip = 'unset';
+                        h1.style.backgroundClip = 'unset';
+                        // 設定文字色，並同時設定 -webkit-text-fill-color，以確保在 WebKit 上生效
+                        h1.style.color = this.value;
+                        h1.style.webkitTextFillColor = this.value;
+                    }
+                });
             }
         });
     </script>
