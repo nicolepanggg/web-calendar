@@ -761,23 +761,87 @@
                 align-items: center;
                 z-index: 1000;
                 cursor: pointer;
+                text-align: center;
             `;
 
             const img = document.createElement('img');
             img.src = imageSrc;
             img.style.cssText = `
-                max-width: 90%;
-                max-height: 90%;
+                max-width: 100%;
                 border-radius: 15px;
                 box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+                cursor: default;
             `;
 
-            modal.appendChild(img);
+            // 創建圖片容器
+            const imgContainer = document.createElement('div');
+            imgContainer.style.cssText = `
+                position: relative;
+                display: inline-block;
+                max-width: 24%;
+            `;
+
+            // 創建關閉按鈕
+            const closeDiv = document.createElement('div');
+            closeDiv.className = 'close';
+            closeDiv.innerHTML = 'X';
+            closeDiv.style.cssText = `
+                position: absolute;
+                top: -2.5rem;
+                right: -2.5rem;
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.9);
+                color: #333;
+                border-radius: 50%;
+                font-size: 20px;
+                font-weight: bold;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                z-index: 1001;
+            `;
+
+            // 關閉按鈕懸停效果
+            closeDiv.addEventListener('mouseenter', function() {
+                this.style.background = 'rgba(255, 255, 255, 1)';
+                this.style.transform = 'scale(1.1)';
+            });
+
+            closeDiv.addEventListener('mouseleave', function() {
+                this.style.background = 'rgba(255, 255, 255, 0.9)';
+                this.style.transform = 'scale(1)';
+            });
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(closeDiv);
+            modal.appendChild(imgContainer);
             document.body.appendChild(modal);
 
-            modal.addEventListener('click', function () {
+            // 點擊背景關閉
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+
+            // 點擊關閉按鈕關閉
+            closeDiv.addEventListener('click', function (e) {
+                e.stopPropagation();
                 document.body.removeChild(modal);
             });
+
+            // 按 ESC 鍵關閉
+            const handleKeyDown = function(e) {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(modal);
+                    document.removeEventListener('keydown', handleKeyDown);
+                }
+            };
+            document.addEventListener('keydown', handleKeyDown);
         }
 
         // 2026年香港公眾假期
