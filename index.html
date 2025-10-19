@@ -588,15 +588,9 @@
             /* 設置300 DPI高解析度頁面 */
             @page {
                 margin: 0;
-                size: A3 portrait;
                 /* 300 DPI 設定 */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                /* 強制單頁設定 */
-                page-break-after: avoid;
-                page-break-before: avoid;
-                orphans: 1;
-                widows: 1;
             }
 
             /* 隱藏不需要列印的元素 */
@@ -617,8 +611,9 @@
             }
 
             .calendar-container {
-                size: A3;
                 /* 300 DPI 優化 */
+                width: 210mm;
+                height: 297mm;
                 transform: scale(1);
                 resolution: 300dpi;
                 transform-origin: top left;
@@ -626,6 +621,10 @@
                 image-rendering: crisp-edges;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                page-break-after: avoid;
+                page-break-before: avoid;
+                orphans: 1;
+                widows: 1;
             }
 
             /* 高解析度文字渲染 */
