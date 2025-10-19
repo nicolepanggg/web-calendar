@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026年香港年曆</title>
-    <!-- 匯出功能所需的庫 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         body {
             box-sizing: border-box;
@@ -519,7 +518,7 @@
         }
 
         .holiday-name {
-            font-size: 0.4cqw;
+            font-size: 0.5cqw;
             line-height: 1.1;
             text-align: center;
             margin-top: 1px;
@@ -571,51 +570,98 @@
         .months-grid {
             grid-template-columns: repeat(3, 1fr);
             /* gap: 1.8cqw; */
-            width: 80%;
+            width: 85%;
             padding-top: 30px;
             margin: auto;
         }
 
         .calendar-header h1 {
-            font-size: 3.5rem;
+            font-size: 3.5cqw;
         }
 
         .month-title {
             font-size: 1.2cqw;
         }
 
-        /* 列印樣式 */
+        /* 列印樣式 - 300 DPI 高解析度 */
         @media print {
+            /* 設置300 DPI高解析度頁面 */
+            @page {
+                margin: 0;
+                size: A3 portrait;
+                /* 300 DPI 設定 */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
 
             /* 隱藏不需要列印的元素 */
             .export-buttons {
                 display: none !important;
             }
 
-            /* 設置頁面邊距 */
-            @page {
-                margin: 0;
-                size: A4 portrait;
-            }
-
-            .content {
-                break-inside: avoid;
-            }
-
-            /* 確保整個日曆容器適合頁面 */
+            /* 確保整個日曆容器適合頁面 - 300 DPI */
             body {
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                /* 高解析度設定 */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
             }
 
             .calendar-container {
-                width: 210mm;
-                height: 297mm;
+                size: A3;
+                /* 300 DPI 優化 */
+                transform: scale(1);
+                resolution: 300dpi;
+                transform-origin: top left;
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
 
+            /* 高解析度文字渲染 */
             .calendar-header h1 {
-                font-size: 24pt;
+            }
+
+            .month-title {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-rendering: optimizeLegibility;
+            }
+
+            .day {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+                text-rendering: optimizeLegibility;
+            }
+
+            .holiday-name {
+                font-size: 0.7cqw;
+            }
+
+            /* 確保圖片高解析度列印 */
+            .gallery-image, .header-image {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+                image-rendering: pixelated;
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* 避免分頁 */
+            .content, .month-card, .months-grid {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+
+            /* 確保背景和邊框列印 */
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
@@ -623,11 +669,8 @@
 
 <body>
     <div class="export-buttons">
-        <button class="export-btn" onclick="printCalendar()" title="直接列印年曆">
-            🖨️ 列印年曆
-        </button>
-        <button class="export-btn" onclick="exportToSVG()" title="匯出為向量圖格式">
-            📐 SVG格式
+        <button class="export-btn" onclick="printCalendar()" title="300 DPI 高解析度列印">
+            🖨️ 300 DPI 列印
         </button>
         <button class="export-btn" onclick="showGoFullPageGuide()" title="學習如何使用 GoFullPage 擴展截取完整網頁">
             📄 GoFullPage 教學
@@ -1015,313 +1058,18 @@
         // 載入圖片畫廊（移除重複調用）
         // loadGalleryImages(); // 已在 DOMContentLoaded 中調用
 
-        // 檢查必要的庫是否載入完成
-        function checkLibraries() {
-            const libraries = [];
 
-            if (typeof html2canvas === 'undefined') {
-                libraries.push('html2canvas');
-            }
 
-            if (libraries.length > 0) {
-                console.warn('以下庫未正確載入:', libraries);
-                // 可以在此添加重新載入的邏輯
-            } else {
-                console.log('所有必要的庫都已正確載入');
-            }
-        }
-
-        // 延遲檢查以確保所有庫都有時間載入
-        setTimeout(checkLibraries, 2000);
-
-        // 列印年曆功能
+        // 列印年曆功能 - 300 DPI 高解析度
         function printCalendar() {
             window.print();
         }
 
-        // 匯出為SVG功能（純向量圖形）
-        async function exportToSVG() {
-            try {
-                console.log('開始SVG向量圖形匯出...');
-                
-                const element = document.querySelector('.calendar-container');
-                if (!element) {
-                    alert('找不到日曆內容，無法生成SVG');
-                    return;
-                }
 
-                // 暫時隱藏匯出按鈕
-                const exportButtons = document.querySelector('.export-buttons');
-                const originalDisplay = exportButtons ? exportButtons.style.display : '';
-                if (exportButtons) {
-                    exportButtons.style.display = 'none';
-                }
 
-                // A4 尺寸（毫米轉換為像素，300 DPI）
-                const A4_WIDTH_MM = 210;
-                const A4_HEIGHT_MM = 297;
-                const DPI = 300;
-                const MM_TO_PX = DPI / 25.4;
-                
-                const svgWidth = A4_WIDTH_MM * MM_TO_PX;
-                const svgHeight = A4_HEIGHT_MM * MM_TO_PX;
 
-                // 創建SVG元素
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('width', `${A4_WIDTH_MM}mm`);
-                svg.setAttribute('height', `${A4_HEIGHT_MM}mm`);
-                svg.setAttribute('viewBox', `0 0 ${svgWidth} ${svgHeight}`);
-                svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
-                // 添加白色背景
-                const background = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                background.setAttribute('width', '100%');
-                background.setAttribute('height', '100%');
-                background.setAttribute('fill', 'white');
-                svg.appendChild(background);
 
-                // 計算尺寸和位置
-                const padding = svgWidth * 0.05; // 5% padding
-                const headerHeight = svgHeight * 0.15; // 15% for header
-                const footerHeight = svgHeight * 0.08; // 8% for footer
-                const monthsGridHeight = svgHeight - headerHeight - footerHeight - padding * 2;
-                
-                // 添加標題
-                const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                title.setAttribute('x', svgWidth / 2);
-                title.setAttribute('y', headerHeight / 2);
-                title.setAttribute('text-anchor', 'middle');
-                title.setAttribute('dominant-baseline', 'middle');
-                title.setAttribute('font-family', 'Microsoft JhengHei, PingFang TC, sans-serif');
-                title.setAttribute('font-size', svgWidth * 0.04);
-                title.setAttribute('font-weight', 'bold');
-                title.setAttribute('fill', '#333');
-                title.textContent = '2026年香港年曆';
-                svg.appendChild(title);
-
-                // 月份網格設置
-                const monthsPerRow = 3;
-                const monthRows = 4;
-                const monthWidth = (svgWidth - padding * 2) / monthsPerRow;
-                const monthHeight = monthsGridHeight / monthRows;
-                
-                // 生成月份日曆
-                for (let month = 0; month < 12; month++) {
-                    const row = Math.floor(month / monthsPerRow);
-                    const col = month % monthsPerRow;
-                    
-                    const monthX = padding + col * monthWidth;
-                    const monthY = headerHeight + padding + row * monthHeight;
-                    
-                    // 創建月份組
-                    const monthGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                    monthGroup.setAttribute('transform', `translate(${monthX}, ${monthY})`);
-                    
-                    // 月份背景
-                    const monthBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    monthBg.setAttribute('width', monthWidth * 0.9);
-                    monthBg.setAttribute('height', monthHeight * 0.9);
-                    monthBg.setAttribute('x', monthWidth * 0.05);
-                    monthBg.setAttribute('y', monthHeight * 0.05);
-                    monthBg.setAttribute('fill', '#f8f9ff');
-                    monthBg.setAttribute('stroke', '#e0e0e0');
-                    monthBg.setAttribute('stroke-width', '1');
-                    monthBg.setAttribute('rx', '8');
-                    monthGroup.appendChild(monthBg);
-                    
-                    // 月份標題
-                    const monthTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    monthTitle.setAttribute('x', monthWidth / 2);
-                    monthTitle.setAttribute('y', monthHeight * 0.15);
-                    monthTitle.setAttribute('text-anchor', 'middle');
-                    monthTitle.setAttribute('font-family', 'Microsoft JhengHei, sans-serif');
-                    monthTitle.setAttribute('font-size', monthWidth * 0.08);
-                    monthTitle.setAttribute('font-weight', 'bold');
-                    monthTitle.setAttribute('fill', 'white');
-                    monthGroup.appendChild(monthTitle);
-                    
-                    // 月份標題背景
-                    const titleBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    titleBg.setAttribute('x', monthWidth * 0.1);
-                    titleBg.setAttribute('y', monthHeight * 0.08);
-                    titleBg.setAttribute('width', monthWidth * 0.8);
-                    titleBg.setAttribute('height', monthHeight * 0.12);
-                    titleBg.setAttribute('fill', '#ff7400');
-                    titleBg.setAttribute('rx', '4');
-                    monthGroup.insertBefore(titleBg, monthTitle);
-                    
-                    monthTitle.textContent = monthNames[month];
-                    
-                    // 星期標題
-                    const weekdayY = monthHeight * 0.25;
-                    const dayWidth = (monthWidth * 0.8) / 7;
-                    
-                    weekdays.forEach((day, i) => {
-                        const weekdayText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                        weekdayText.setAttribute('x', monthWidth * 0.1 + (i + 0.5) * dayWidth);
-                        weekdayText.setAttribute('y', weekdayY);
-                        weekdayText.setAttribute('text-anchor', 'middle');
-                        weekdayText.setAttribute('font-family', 'Microsoft JhengHei, sans-serif');
-                        weekdayText.setAttribute('font-size', monthWidth * 0.04);
-                        weekdayText.setAttribute('font-weight', 'bold');
-                        weekdayText.setAttribute('fill', '#7f8c8d');
-                        weekdayText.textContent = day;
-                        monthGroup.appendChild(weekdayText);
-                    });
-                    
-                    // 生成日期
-                    const firstDay = new Date(2026, month, 1);
-                    const lastDay = new Date(2026, month + 1, 0);
-                    const firstDayOfWeek = firstDay.getDay();
-                    const daysInMonth = lastDay.getDate();
-                    
-                    const startY = monthHeight * 0.32;
-                    const dayHeight = (monthHeight * 0.5) / 6; // 最多6行
-                    
-                    let dayIndex = 0;
-                    
-                    // 生成日期網格
-                    for (let week = 0; week < 6; week++) {
-                        for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
-                            const dayNumber = dayIndex - firstDayOfWeek + 1;
-                            
-                            if (dayNumber > 0 && dayNumber <= daysInMonth) {
-                                const dayX = monthWidth * 0.1 + (dayOfWeek + 0.5) * dayWidth;
-                                const dayY = startY + (week + 0.5) * dayHeight;
-                                
-                                // 檢查是否為假期
-                                const currentDate = new Date(2026, month, dayNumber);
-                                const year = currentDate.getFullYear();
-                                const monthStr = String(currentDate.getMonth() + 1).padStart(2, '0');
-                                const dayStr = String(currentDate.getDate()).padStart(2, '0');
-                                const dateString = `${year}-${monthStr}-${dayStr}`;
-                                
-                                let textColor = '#333';
-                                let bgColor = 'rgba(255,255,255,0.7)';
-                                
-                                // 檢查星期和假期
-                                if (dayOfWeek === 0) { // 星期日
-                                    textColor = '#e74c3c';
-                                } else if (dayOfWeek === 6) { // 星期六
-                                    textColor = '#3498db';
-                                }
-                                
-                                if (holidays[dateString]) {
-                                    bgColor = '#ffebee';
-                                    textColor = '#c62828';
-                                }
-                                
-                                // 日期背景
-                                const dayBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                                dayBg.setAttribute('x', dayX - dayWidth * 0.4);
-                                dayBg.setAttribute('y', dayY - dayHeight * 0.3);
-                                dayBg.setAttribute('width', dayWidth * 0.8);
-                                dayBg.setAttribute('height', dayHeight * 0.6);
-                                dayBg.setAttribute('fill', bgColor);
-                                dayBg.setAttribute('rx', '2');
-                                monthGroup.appendChild(dayBg);
-                                
-                                // 日期數字
-                                const dayText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                                dayText.setAttribute('x', dayX);
-                                dayText.setAttribute('y', dayY);
-                                dayText.setAttribute('text-anchor', 'middle');
-                                dayText.setAttribute('dominant-baseline', 'middle');
-                                dayText.setAttribute('font-family', 'Microsoft JhengHei, sans-serif');
-                                dayText.setAttribute('font-size', monthWidth * 0.03);
-                                dayText.setAttribute('font-weight', '600');
-                                dayText.setAttribute('fill', textColor);
-                                dayText.textContent = dayNumber;
-                                monthGroup.appendChild(dayText);
-                                
-                                // 假期名稱
-                                if (holidays[dateString]) {
-                                    const holidayText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                                    holidayText.setAttribute('x', dayX);
-                                    holidayText.setAttribute('y', dayY + dayHeight * 0.15);
-                                    holidayText.setAttribute('text-anchor', 'middle');
-                                    holidayText.setAttribute('font-family', 'Microsoft JhengHei, sans-serif');
-                                    holidayText.setAttribute('font-size', monthWidth * 0.015);
-                                    holidayText.setAttribute('fill', textColor);
-                                    holidayText.textContent = holidays[dateString].length > 4 ? 
-                                        holidays[dateString].substring(0, 4) : holidays[dateString];
-                                    monthGroup.appendChild(holidayText);
-                                }
-                            }
-                            dayIndex++;
-                        }
-                    }
-                    
-                    svg.appendChild(monthGroup);
-                }
-                
-                // 添加圖例
-                const legendY = svgHeight - footerHeight + padding;
-                const legendItems = [
-                    { color: '#ffebee', text: '公眾假期' },
-                    { color: '#e74c3c', text: '星期日' },
-                    { color: '#3498db', text: '星期六' }
-                ];
-                
-                legendItems.forEach((item, i) => {
-                    const legendX = svgWidth / 2 - (legendItems.length * 150) / 2 + i * 150;
-                    
-                    // 圖例色塊
-                    const legendRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    legendRect.setAttribute('x', legendX);
-                    legendRect.setAttribute('y', legendY - 8);
-                    legendRect.setAttribute('width', '16');
-                    legendRect.setAttribute('height', '16');
-                    legendRect.setAttribute('fill', item.color);
-                    legendRect.setAttribute('rx', '3');
-                    svg.appendChild(legendRect);
-                    
-                    // 圖例文字
-                    const legendText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    legendText.setAttribute('x', legendX + 25);
-                    legendText.setAttribute('y', legendY);
-                    legendText.setAttribute('font-family', 'Microsoft JhengHei, sans-serif');
-                    legendText.setAttribute('font-size', '14');
-                    legendText.setAttribute('fill', '#666');
-                    legendText.textContent = item.text;
-                    svg.appendChild(legendText);
-                });
-
-                // 恢復按鈕顯示
-                if (exportButtons) {
-                    exportButtons.style.display = originalDisplay;
-                }
-
-                // 序列化SVG並下載
-                const serializer = new XMLSerializer();
-                const svgString = serializer.serializeToString(svg);
-                
-                const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
-                const url = URL.createObjectURL(blob);
-                
-                const downloadLink = document.createElement('a');
-                downloadLink.href = url;
-                downloadLink.download = '2026年香港年曆_向量圖形.svg';
-                
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
-                URL.revokeObjectURL(url);
-                
-                console.log('SVG向量圖形匯出完成');
-                showSuccessMessage('SVG向量圖形匯出成功！純向量格式，可無限縮放');
-
-            } catch (error) {
-                console.error('SVG匯出失敗:', error);
-                
-                const exportButtons = document.querySelector('.export-buttons');
-                if (exportButtons) {
-                    exportButtons.style.display = '';
-                }
-                
-                alert('SVG匯出失敗：' + error.message);
-            }
-        }
 
         // 顯示成功訊息的簡化版本
         function showSuccessMessage(message) {
