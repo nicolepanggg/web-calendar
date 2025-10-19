@@ -592,6 +592,11 @@
                 /* 300 DPI 設定 */
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+                /* 強制單頁設定 */
+                page-break-after: avoid;
+                page-break-before: avoid;
+                orphans: 1;
+                widows: 1;
             }
 
             /* 隱藏不需要列印的元素 */
@@ -625,8 +630,9 @@
 
             /* 高解析度文字渲染 */
             .calendar-header h1 {
+                
             }
-
+            
             .month-title {
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
@@ -637,10 +643,11 @@
                 -webkit-font-smoothing: antialiased;
                 -moz-osx-font-smoothing: grayscale;
                 text-rendering: optimizeLegibility;
+                padding-top: 0.3rem;
             }
 
             .holiday-name {
-                font-size: 0.7cqw;
+                font-size: 0.8cqw;
             }
 
             /* 確保圖片高解析度列印 */
@@ -938,7 +945,7 @@
             '2026-06-16': '端午節',
             '2026-07-01': '香港特別行政區成立紀念日',
             '2026-10-01': '國慶日',
-            '2026-10-06': '中秋節翌日',
+            '2026-10-06': '中秋節<br/>翌日',
             '2026-10-09': '重陽節',
             '2026-12-25': '聖誕節',
             '2026-12-26': '節禮日'
