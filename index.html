@@ -30,10 +30,7 @@
         }
 
         .calendar-container {
-            /* A4 比例 1440px 寬度 */
-            width: 1440px;
-            height: calc(1440px * 297 / 210);
-            /* 根據A4比例計算高度 = 2040px */
+            /* 預設A4比例，可由JavaScript動態調整 */
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
@@ -42,8 +39,6 @@
             overflow: hidden;
             position: relative;
             z-index: 1;
-            /* 確保內容適應A4比例 */
-            aspect-ratio: 210 / 297;
             display: flex;
             flex-direction: column;
             background: #ffffff;
@@ -53,6 +48,7 @@
             background-repeat: no-repeat;
             background-position: bottom center;
             background-size: contain;
+            transition: all 0.5s ease; /* 平滑過渡效果 */
 
         }
 
@@ -334,13 +330,70 @@
             transform: translateY(0);
         }
 
+        /* 印刷尺寸選擇器樣式 */
+        .print-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 25px;
+            padding: 8px 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
 
+        .print-size-selector:hover {
+            border-color: #667eea;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .print-size-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #667eea;
+            white-space: nowrap;
+        }
+
+        .print-size-dropdown {
+            background: transparent;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #667eea;
+            cursor: pointer;
+            outline: none;
+            min-width: 60px;
+        }
+
+        .print-size-dropdown option {
+            background: white;
+            color: #333;
+            padding: 5px;
+        }
+
+        /* 動態容器尺寸 */
+        .calendar-container {
+            width: 1440px;
+            height: calc(1440px * 297 / 210);
+        }
+
+        /*.calendar-container.size-A3 {
+            width: 2040px;
+            height: calc(2040px * 420 / 297);
+        }
+
+            .calendar-container.size-A2 {
+            width: 2880px;
+            height: calc(2880px * 594 / 420); 
+        }*/
 
         .months-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(4, auto);
-            gap: 1rem;
+            gap: 1.1rem;
             flex: 1;
 
             /* 確保12個月分4行排列，每個卡片保持4:3比例 */
@@ -562,14 +615,9 @@
 
         /* 大屏幕適配 */
 
-        .calendar-container {
-            width: 1440px;
-            height: calc(1440px * 297 / 210);
-        }
-
         .months-grid {
             grid-template-columns: repeat(3, 1fr);
-            /* gap: 1.8cqw; */
+            gap: 1.1cqw;
             width: 85%;
             padding-top: 30px;
             margin: auto;
@@ -611,11 +659,8 @@
             }
 
             .calendar-container {
-                /* 300 DPI 優化 */
-                width: 210mm;
-                height: 297mm;
+                /* 列印時使用毫米單位，響應不同尺寸 */
                 transform: scale(1);
-                resolution: 300dpi;
                 transform-origin: top left;
                 image-rendering: -webkit-optimize-contrast;
                 image-rendering: crisp-edges;
@@ -625,6 +670,21 @@
                 page-break-before: avoid;
                 orphans: 1;
                 widows: 1;
+            }
+            
+            .calendar-container.size-A4 {
+                width: 210mm !important;
+                height: 297mm !important;
+            }
+            
+            .calendar-container.size-A3 {
+                width: 297mm !important;
+                height: 420mm !important;
+            }
+            
+            .calendar-container.size-A2 {
+                width: 420mm !important;
+                height: 594mm !important;
             }
 
             /* 高解析度文字渲染 */
@@ -675,6 +735,14 @@
 
 <body>
     <div class="export-buttons">
+        <div class="print-size-selector">
+            <span class="print-size-label">📏 顯示尺寸:</span>
+            <select class="print-size-dropdown" id="printSizeSelect">
+                <option value="A4" selected>A4 (210×297mm)</option>
+                <option value="A3">A3 (297×420mm)</option>
+                <option value="A2">A2 (420×594mm)</option>
+            </select>
+        </div>
         <button class="export-btn" onclick="printCalendar()" title="300 DPI 高解析度列印">
             🖨️ 300 DPI 列印
         </button>
@@ -1078,7 +1146,54 @@
 
         // 列印年曆功能 - 300 DPI 高解析度
         function printCalendar() {
-            window.print();
+            const sizeSelect = document.getElementById('printSizeSelect');
+            const selectedSize = sizeSelect.value;
+            
+            console.log('準備列印，選擇的尺寸:', selectedSize);
+            
+            // 動態設定頁面尺寸
+            const existingStyle = document.getElementById('dynamic-print-style');
+            if (existingStyle) {
+                existingStyle.remove();
+            }
+            
+            const style = document.createElement('style');
+            style.id = 'dynamic-print-style';
+            style.innerHTML = `
+                @media print {
+                    @page {
+                        size: ${selectedSize} portrait !important;
+                        margin: 0 !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                        page-break-after: avoid !important;
+                        page-break-before: avoid !important;
+                        orphans: 1 !important;
+                        widows: 1 !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            console.log('已應用列印樣式:', selectedSize);
+            
+            // 給瀏覽器一點時間應用新樣式
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        // 更新日曆容器尺寸
+        function updateCalendarSize(size) {
+            const container = document.querySelector('.calendar-container');
+            
+            // 移除所有尺寸類別
+            container.classList.remove('size-A4', 'size-A3', 'size-A2');
+            
+            // 添加新的尺寸類別
+            container.classList.add(`size-${size}`);
+            
+            console.log('已更新容器尺寸為:', size);
         }
 
 
@@ -1238,6 +1353,22 @@
         document.addEventListener('DOMContentLoaded', function () {
             // 先載入圖片，圖片載入完成後會自動生成日曆
             loadGalleryImages();
+            
+            // 初始化列印尺寸選擇器
+            const printSizeSelect = document.getElementById('printSizeSelect');
+            if (printSizeSelect) {
+                // 初始化為A4尺寸
+                updateCalendarSize('A4');
+                
+                // 監聽尺寸變更
+                printSizeSelect.addEventListener('change', function() {
+                    const selectedSize = this.value;
+                    updateCalendarSize(selectedSize);
+                    console.log('使用者選擇尺寸:', selectedSize);
+                });
+                
+                console.log('列印尺寸選擇器已初始化');
+            }
         });
     </script>
 </body>
