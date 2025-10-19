@@ -350,8 +350,8 @@
 
         .month-card {
             background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
-            border-radius: 8px;
-            padding: 8px;
+            border-radius: 0.8cqw;
+            padding: 0.8cqw;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
@@ -359,8 +359,8 @@
             display: flex;
             flex-direction: column;
             /* 月份卡片 4:3 比例 */
-            aspect-ratio: 1 / 0.9;
-            width: 100%;
+            /*aspect-ratio: 1 / 0.9;*/
+            /*width: 100%;*/
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -451,7 +451,7 @@
 
         .weekday {
             text-align: center;
-            font-size: 1.0rem;
+            font-size: 1cqw;
             font-weight: bold;
             color: #7f8c8d;
             padding: 3px 2px;
@@ -470,7 +470,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            font-size: 1.0rem;
+            font-size: 1cqw;
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
@@ -519,7 +519,7 @@
         }
 
         .holiday-name {
-            font-size: 0.6rem;
+            font-size: 0.6cqw;
             line-height: 1.1;
             text-align: center;
             margin-top: 1px;
@@ -570,9 +570,9 @@
 
         .months-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 3rem;
-            width: 70%;
-            padding-top: 50px;
+            /* gap: 1.8cqw; */
+            width: 75%;
+            padding-top: 30px;
             margin: auto;
         }
 
@@ -581,7 +581,7 @@
         }
 
         .month-title {
-            font-size: 1.6rem;
+            font-size: 1.6cqw;
             padding: 5px;
         }
 
