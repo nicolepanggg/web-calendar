@@ -401,7 +401,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(4, auto);
-            gap: 8px;
+            gap: 1rem;
             flex: 1;
 
             /* 確保12個月分4行排列，每個卡片保持4:3比例 */
@@ -419,7 +419,7 @@
             display: flex;
             flex-direction: column;
             /* 月份卡片 4:3 比例 */
-            aspect-ratio: 1.32 / 1;
+            aspect-ratio: 1 / 0.9;
             width: 100%;
             background-size: cover;
             background-position: center;
@@ -630,9 +630,9 @@
 
         .months-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 50px;
-            padding: 40px;
-            width: 80%;
+            gap: 3rem;
+            width: 70%;
+            padding-top: 50px;
             margin: auto;
         }
 
