@@ -60,8 +60,9 @@
             position: relative;
             overflow: hidden;
             flex-shrink: 0;
-            height: 15%;
+            min-height: 15%;
             width: 100%;
+            padding: 2%;
         }
 
         .calendar-header::before {
@@ -146,11 +147,12 @@
             align-items: center;
             gap: 0.78rem;
             width: 100%;
+            min-height: 45%;
             margin: 0 auto;
         }
 
         .gallery-image {
-            width: 8.5%;
+            width: 8%;
             aspect-ratio: 1 / 1;
             object-fit: cover;
             border-radius: 50%;
@@ -661,9 +663,9 @@
 
         .months-grid {
             grid-template-columns: repeat(3, 1fr);
-            gap: 1.1cqw;
-            width: 85%;
-            padding-top: 30px;
+            gap: 1.3cqw;
+            width: 80%;
+            padding-top: 20px;
             margin: auto;
         }
 
@@ -1312,8 +1314,9 @@
                 const monthTitle = document.createElement('div');
                 monthTitle.className = 'month-title';
                 monthTitle.textContent = monthNames[month];
-                // 如果使用者已選擇月份標題背景顏色，套用到新建立的 month-title
-                if (window.__selectedMonthTitleBgColor) {
+                // 預設為指定漸層，若有自訂顏色則覆蓋
+                let defaultGradient = 'linear-gradient(135deg, #ff740087 0%, #ff5900 100%)';
+                if (window.__selectedMonthTitleBgColor && window.__selectedMonthTitleBgColor !== defaultGradient) {
                     monthTitle.style.background = window.__selectedMonthTitleBgColor;
                     monthTitle.style.padding = '6px 8px';
                     monthTitle.style.borderRadius = '6px';
@@ -1841,19 +1844,12 @@
 
             // 處理月份標題背景顏色選擇器
             const monthTitleColorPicker = document.getElementById('monthTitleColorPicker');
-            // 初始化全域變數 (背景色)
-            window.__selectedMonthTitleBgColor = (monthTitleColorPicker && monthTitleColorPicker.value) || '#ffffff';
+            // 預設不覆蓋漸層，只有用戶選擇時才設置
+            window.__selectedMonthTitleBgColor = undefined;
             if (monthTitleColorPicker) {
                 monthTitleColorPicker.addEventListener('input', function () {
                     window.__selectedMonthTitleBgColor = this.value;
-                    // 套用到現有的 .month-title
-                    document.querySelectorAll('.month-title').forEach(el => {
-                        el.style.background = this.value;
-                        el.style.padding = '6px 8px';
-                        el.style.borderRadius = '6px';
-                        // 如果背景顏色較淺，保留白色文字，否則自動切換黑/白（簡單處理）
-                        el.style.color = '#fff';
-                    });
+                    generateCalendar();
                 });
             }
         });
