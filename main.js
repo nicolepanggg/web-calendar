@@ -815,6 +815,23 @@
 
         // 增強的網頁載入完成處理
         document.addEventListener('DOMContentLoaded', function () {
+    function updateMonthsGridPadding() {
+        const gallery = document.getElementById('imagesGallery');
+        const monthsGrid = document.getElementById('monthsGrid');
+        if (!gallery || !monthsGrid) return;
+        const count = gallery.querySelectorAll('img').length;
+        monthsGrid.style.paddingTop = (count > 11) ? '10px' : '30px';
+    }
+
+    // 初始執行
+    updateMonthsGridPadding();
+
+    // 監聽 images-gallery 變化
+    const galleryObserver = new MutationObserver(updateMonthsGridPadding);
+    const gallery = document.getElementById('imagesGallery');
+    if (gallery) {
+        galleryObserver.observe(gallery, { childList: true });
+    }
             // 先載入圖片，圖片載入完成後會自動生成日曆
             loadGalleryImages();
             
