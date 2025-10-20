@@ -437,13 +437,16 @@
                 const monthTitle = document.createElement('div');
                 monthTitle.className = 'month-title';
                 monthTitle.textContent = monthNames[month];
-                // 如果使用者已選擇月份標題背景顏色，套用到新建立的 month-title
+              
                 if (window.__selectedMonthTitleBgColor) {
                     monthTitle.style.background = window.__selectedMonthTitleBgColor;
-                    monthTitle.style.padding = '6px 8px';
-                    monthTitle.style.borderRadius = '6px';
-                    monthTitle.style.color = '#fff';
                 }
+                // 預設漸層，只有用戶選擇顏色才覆蓋
+                let defaultGradient = 'linear-gradient(135deg, #ff740087 0%, #ff5900 100%)';
+                monthTitle.style.background = defaultGradient;
+                monthTitle.style.padding = '6px 8px';
+                monthTitle.style.borderRadius = '6px';
+                monthTitle.style.color = '#fff';
 
                 const weekdaysDiv = document.createElement('div');
                 weekdaysDiv.className = 'weekdays';
