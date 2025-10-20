@@ -162,6 +162,50 @@
             animation: fadeInUp 0.6s ease forwards;
         }
 
+        /* gallery item wrapper and controls */
+        .gallery-item {
+            position: relative;
+            display: inline-block;
+        }
+
+        .gallery-controls {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            display: flex;
+            gap: 6px;
+            z-index: 3;
+        }
+
+        .gallery-control-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .gallery-filename {
+            min-width: 140px;
+            max-width: 320px;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #333;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 8px;
+        }
+
         .gallery-image:hover {
             transform: scale(1.15) rotate(5deg);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.3);
@@ -787,6 +831,17 @@
         <button class="export-btn" onclick="showPrintGuide()" title="學習如何列印年曆和設定尺寸">
             � 列印教學
         </button>
+        <!-- 圖片畫廊管理區 -->
+        <div style="width:85%; margin: 20px auto 40px auto; text-align: center;">
+            <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:12px;">
+                <button class="export-btn" id="addGalleryImageBtn">➕ 新增畫廊圖片</button>
+                <input id="addGalleryInput" type="file" accept="image/*" style="display:none;" />
+                <button class="export-btn" id="clearGalleryBtn">🗑️ 清空畫廊</button>
+            </div>
+            <div id="galleryManager" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+                <!-- 管理用小縮圖由 JS 生成 -->
+            </div>
+        </div>
     </div>
     <main class="calendar-container">
         <header class="calendar-header">
@@ -801,7 +856,6 @@
         <div class="months-grid" id="monthsGrid">
             <!-- 月份將由JavaScript生成 -->
         </div>
-
         <footer class="legend">
             <div class="legend-item">
                 <div class="legend-color" style="background: #ffebee;"></div>
@@ -875,9 +929,9 @@
                         galleryImg.className = 'gallery-image';
                         galleryImg.style.animationDelay = `${delay}s`;
 
-                        // 點擊圖片時放大顯示
+                        // 點擊圖片時放大顯示（傳入 element 以便可替換）
                         galleryImg.addEventListener('click', function () {
-                            showImageModal(imageName);
+                            showImageModal(galleryImg);
                         });
 
                         gallery.appendChild(galleryImg);
@@ -906,19 +960,22 @@
                     defaultImg.alt = '預設圖片';
                     defaultImg.className = 'gallery-image';
                     defaultImg.addEventListener('click', function () {
-                        showImageModal('photos/3.png');
+                        showImageModal(defaultImg);
                     });
                     gallery.appendChild(defaultImg);
                 }
                 // 圖片載入完成後生成日曆
                 setTimeout(() => {
                     generateCalendar();
+                    // 同步到 gallery 管理器
+                    populateGalleryManager();
                 }, 500);
             }, 2000);
         }
 
+
         // 顯示圖片放大視窗
-        function showImageModal(imageSrc) {
+        function showImageModal(imageOrElement) {
             const modal = document.createElement('div');
             modal.style.cssText = `
                 position: fixed;
@@ -936,9 +993,23 @@
                 opacity: 0;
                 transition: all 0.4s ease;
             `;
+            // 支援傳入 element 或 src 字串
+            let galleryElement = null;
+            let src = '';
+            if (imageOrElement && imageOrElement.tagName) {
+                galleryElement = imageOrElement;
+                src = galleryElement.src;
+            } else if (typeof imageOrElement === 'string') {
+                src = imageOrElement;
+                // 嘗試找到對應的 gallery element
+                const gallery = document.getElementById('imagesGallery');
+                if (gallery) {
+                    galleryElement = Array.from(gallery.querySelectorAll('.gallery-image')).find(i => i.src === src) || null;
+                }
+            }
 
             const img = document.createElement('img');
-            img.src = imageSrc;
+            img.src = src;
             img.style.cssText = `
                 max-width: 100%;
                 border-radius: 15px;
@@ -994,6 +1065,44 @@
 
             imgContainer.appendChild(img);
             imgContainer.appendChild(closeDiv);
+            // 若為可替換的 gallery 圖片，加入替換按鈕
+            if (galleryElement) {
+                const replaceBtn = document.createElement('button');
+                replaceBtn.textContent = '替換圖片';
+                replaceBtn.style.cssText = `
+                    position: absolute; bottom: -3rem; left: 50%; transform: translateX(-50%);
+                    background: #667eea; color: white; border: none; padding: 10px 18px;
+                    border-radius: 10px; cursor: pointer; z-index: 1001; font-weight:600;
+                `;
+                replaceBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'image/*';
+                    input.onchange = function (ev) {
+                        const file = ev.target.files && ev.target.files[0];
+                        if (!file) return;
+                        if (!file.type.startsWith('image/')) {
+                            alert('請上載圖片檔案（jpg/png/gif 等）');
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function (r) {
+                            const dataUrl = r.target.result;
+                            // 更新 modal 顯示
+                            img.src = dataUrl;
+                            // 更新原始 gallery 元素
+                            try { galleryElement.src = dataUrl; } catch (err) {}
+                            // 重新生成年曆並更新管理面板
+                            generateCalendar();
+                            populateGalleryManager();
+                        };
+                        reader.readAsDataURL(file);
+                    };
+                    input.click();
+                });
+                imgContainer.appendChild(replaceBtn);
+            }
             modal.appendChild(imgContainer);
             document.body.appendChild(modal);
 
@@ -1047,6 +1156,110 @@
                 }
             };
             document.addEventListener('keydown', handleKeyDown);
+        }
+
+        // ---------- Gallery 管理 Helpers ----------
+        function createGalleryManagerItem(src, name) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'gallery-item';
+            wrapper.dataset.src = src;
+
+            // 顯示檔案名稱（若沒有提供 name，嘗試從 src 擷取）
+            let displayName = name || '';
+            if (!displayName) {
+                try {
+                    if (src.startsWith('data:')) displayName = '上載圖片';
+                    else displayName = src.split('/').pop();
+                } catch (e) {
+                    displayName = '圖片';
+                }
+            }
+
+            const filenameDiv = document.createElement('div');
+            filenameDiv.className = 'gallery-filename';
+            filenameDiv.textContent = displayName;
+            filenameDiv.style.padding = '8px 12px';
+            filenameDiv.style.background = 'rgba(0,0,0,0.05)';
+            filenameDiv.style.borderRadius = '8px';
+
+            const controls = document.createElement('div');
+            controls.className = 'gallery-controls';
+
+            const replaceBtn = document.createElement('button');
+            replaceBtn.className = 'gallery-control-btn';
+            replaceBtn.title = '替換';
+            replaceBtn.innerHTML = '✏️';
+            replaceBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = function (ev) {
+                    const file = ev.target.files && ev.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (r) {
+                        const newSrc = r.target.result;
+                        // 更新 gallery 上對應的圖片 (可能有多張相同 src)
+                        const gallery = document.getElementById('imagesGallery');
+                        const imgs = Array.from(gallery.querySelectorAll('.gallery-image'));
+                        imgs.forEach(gimg => {
+                            if (gimg.src === wrapper.dataset.src) {
+                                gimg.src = newSrc;
+                                gimg.alt = file.name || gimg.alt;
+                            }
+                        });
+                        // 更新管理項目資料
+                        wrapper.dataset.src = newSrc;
+                        filenameDiv.textContent = file.name || '上載圖片';
+                        // 重新生成年曆與管理面板
+                        generateCalendar();
+                        populateGalleryManager();
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            });
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'gallery-control-btn';
+            deleteBtn.title = '刪除';
+            deleteBtn.innerHTML = '🗑️';
+            deleteBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                wrapper.remove();
+                const gallery = document.getElementById('imagesGallery');
+                const imgs = Array.from(gallery.querySelectorAll('.gallery-image'));
+                imgs.forEach(gimg => {
+                    if (gimg.src === wrapper.dataset.src) gimg.remove();
+                });
+                generateCalendar();
+                populateGalleryManager();
+            });
+
+            controls.appendChild(replaceBtn);
+            controls.appendChild(deleteBtn);
+
+            wrapper.appendChild(filenameDiv);
+            wrapper.appendChild(controls);
+            return wrapper;
+        }
+
+        function populateGalleryManager() {
+            const manager = document.getElementById('galleryManager');
+            const gallery = document.getElementById('imagesGallery');
+            manager.innerHTML = '';
+            const imgs = gallery.querySelectorAll('.gallery-image');
+            if (imgs.length === 0) {
+                const p = document.createElement('div');
+                p.textContent = '目前畫廊無圖片，可點「新增畫廊圖片」上載。';
+                manager.appendChild(p);
+                return;
+            }
+            imgs.forEach(i => {
+                const item = createGalleryManagerItem(i.src, i.alt);
+                manager.appendChild(item);
+            });
         }
 
         // 2026年香港公眾假期
@@ -1564,6 +1777,49 @@
                         reader.readAsDataURL(file);
                     });
                 }
+
+                // Gallery 管理按鈕
+                const addGalleryBtn = document.getElementById('addGalleryImageBtn');
+                const addGalleryInput = document.getElementById('addGalleryInput');
+                const clearGalleryBtn = document.getElementById('clearGalleryBtn');
+                if (addGalleryBtn && addGalleryInput) {
+                    addGalleryBtn.addEventListener('click', function () {
+                        addGalleryInput.click();
+                    });
+                    addGalleryInput.addEventListener('change', function (e) {
+                        const file = e.target.files && e.target.files[0];
+                        if (!file) return;
+                        if (!file.type.startsWith('image/')) {
+                            alert('請上載圖片檔案（jpg/png/gif 等）');
+                            return;
+                        }
+                        const reader = new FileReader();
+                        reader.onload = function (ev) {
+                            // 在 imagesGallery 中加入圖片
+                            const gallery = document.getElementById('imagesGallery');
+                            const galleryImg = document.createElement('img');
+                            galleryImg.src = ev.target.result;
+                            galleryImg.alt = file.name;
+                            galleryImg.className = 'gallery-image';
+                            gallery.appendChild(galleryImg);
+                            populateGalleryManager();
+                            generateCalendar();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                if (clearGalleryBtn) {
+                    clearGalleryBtn.addEventListener('click', function () {
+                        const gallery = document.getElementById('imagesGallery');
+                        gallery.innerHTML = '';
+                        populateGalleryManager();
+                        generateCalendar();
+                    });
+                }
+
+                // 初始填充 gallery manager（如果畫廊已有圖片）
+                populateGalleryManager();
 
             // 處理 H1 顏色選擇器
             const h1ColorPicker = document.getElementById('h1ColorPicker');
