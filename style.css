@@ -563,7 +563,7 @@ body::before {
     flex-direction : column;
     align-items    : center;
     justify-content: flex-start;
-    font-size      : 1cqw;
+    /*font-size      : 1cqw;*/
     font-weight    : 600;
     border-radius  : 4px;
     cursor         : pointer;
@@ -612,7 +612,7 @@ body::before {
 }
 
 .holiday-name {
-    font-size  : 0.5cqw;
+    font-size  : 0.6rem;
     line-height: 1.1;
     text-align : center;
     margin-top : 1px;
