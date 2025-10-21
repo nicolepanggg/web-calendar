@@ -138,7 +138,7 @@ body::before {
     flex-wrap      : wrap;
     justify-content: center;
     align-items    : center;
-    gap            : 0.6rem;
+    gap            : 1rem;
     width          : 90%;
     min-height     : 45%;
     margin         : 0 auto;
@@ -435,7 +435,7 @@ body::before {
     display              : grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows   : repeat(4, auto);
-    gap                  : 1.1rem;
+    gap                  : 1.6rem;
     flex                 : 1;
 
     /* 確保12個月分4行排列，每個卡片保持4:3比例 */
@@ -659,14 +659,19 @@ body::before {
 
 .months-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap                  : 1cqw;
+    gap                  : 1.5rem;
     width                : 78%;
     padding-top          : 30px;
     margin               : auto;
 }
 
+.calendar-header {
+    padding-top: 1cqw;
+    padding-bottom: 1cqw;
+}
+
 .calendar-header h1 {
-    font-size: 3.5cqw;
+    font-size: 4rem;
 }
 
 .month-title {
@@ -701,6 +706,10 @@ body::before {
         image-rendering           : crisp-edges;
     }
 
+    .calendar-header h1 {
+        font-size: 3cqw;
+    }
+
     .calendar-container {
         /* 列印時使用毫米單位，響應不同尺寸 */
         transform                 : scale(1);
@@ -728,6 +737,11 @@ body::before {
     .calendar-container.size-A2 {
         width : 420mm !important;
         height: 594mm !important;
+    }
+
+    .images-gallery {
+        width: 95% !important;
+        gap: 0.6rem;
     }
 
     /* 高解析度文字渲染 */
@@ -772,6 +786,7 @@ body::before {
     .content,
     .month-card,
     .months-grid {
+        gap : 1.5cqw;
         break-inside     : avoid;
         page-break-inside: avoid;
     }
