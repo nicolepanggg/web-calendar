@@ -815,13 +815,19 @@
 
         // 增強的網頁載入完成處理
         document.addEventListener('DOMContentLoaded', function () {
-    function updateMonthsGridPadding() {
-        const gallery = document.getElementById('imagesGallery');
-        const monthsGrid = document.getElementById('monthsGrid');
-        if (!gallery || !monthsGrid) return;
-        const count = gallery.querySelectorAll('img').length;
-        monthsGrid.style.paddingTop = (count > 11) ? '10px' : '30px';
-    }
+        function updateMonthsGridPadding() {
+            const gallery = document.getElementById('imagesGallery');
+            const monthsGrid = document.getElementById('monthsGrid');
+            if (!gallery || !monthsGrid) return;
+            const count = gallery.querySelectorAll('img').length;
+            monthsGrid.style.paddingTop = (count > 10) ? '10px' : '30px';
+            // 新增：根據圖片數量調整寬度
+            const imgs = gallery.querySelectorAll('img');
+            const imgWidth = (count > 10) ? '8%' : '7.8%';
+            imgs.forEach(img => {
+                img.style.width = imgWidth;
+            });
+        }
 
     // 初始執行
     updateMonthsGridPadding();

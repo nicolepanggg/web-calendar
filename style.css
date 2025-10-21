@@ -138,8 +138,8 @@ body::before {
     flex-wrap      : wrap;
     justify-content: center;
     align-items    : center;
-    gap            : 0.78rem;
-    width          : 100%;
+    gap            : 0.6rem;
+    width          : 90%;
     min-height     : 45%;
     margin         : 0 auto;
 }
@@ -545,7 +545,7 @@ body::before {
 
 .weekday {
     text-align : center;
-    font-size  : 1cqw;
+    font-size  : 1rem;
     font-weight: bold;
     color      : #7f8c8d;
     padding    : 3px 2px;
@@ -670,7 +670,7 @@ body::before {
 }
 
 .month-title {
-    font-size: 1.2cqw;
+    font-size: 1.2rem;
 }
 
 /* 列印樣式 - 300 DPI 高解析度 */
@@ -733,6 +733,10 @@ body::before {
     /* 高解析度文字渲染 */
 
     .month-title {
+        font-size: 1.2cqw;
+    }
+    
+    .month-title {
         -webkit-font-smoothing : antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering         : optimizeLegibility;
@@ -745,6 +749,10 @@ body::before {
         padding-top            : 0.3rem;
         font-size: 1cqw;
     }
+
+    .weekday {
+    font-size  : 1cqw;
+}
 
     .holiday-name {
         font-size: 0.75cqw;
