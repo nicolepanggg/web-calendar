@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026年香港年曆</title>
-    <link rel="stylesheet" href="style.css?version=2.3">
+    <link rel="stylesheet" href="style.css?version=2.5">
 </head>
 
 <body>
@@ -73,7 +73,6 @@
                 <button class="export-btn" id="clearGalleryBtn">🗑️ 清空畫廊</button>
             </div>
             <div id="galleryManager" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                <!-- 管理用小縮圖由 JS 生成 -->
             </div>
         </div>
     </div>
@@ -81,15 +80,10 @@
         <header class="calendar-header">
             <div class="header-content">
                 <h1>2026年香港年曆</h1>
-                <div class="images-gallery" id="imagesGallery">
-                    <!-- 圖片將由JavaScript動態載入 -->
-                </div>
+                <div class="images-gallery" id="imagesGallery"></div>
             </div>
         </header>
-
-        <div class="months-grid" id="monthsGrid">
-            <!-- 月份將由JavaScript生成 -->
-        </div>
+        <div class="months-grid" id="monthsGrid"></div>
         <footer class="legend">
             <div class="legend-item">
                 <div class="legend-color" style="background: #ffebee;"></div>
@@ -105,6 +99,6 @@
             </div>
         </footer>
     </main>
-    <script src="main.js?version=2.3"></script>
+    <script src="main.js?version=2.5"></script>
 </body>
 </html>

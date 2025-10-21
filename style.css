@@ -689,6 +689,11 @@ body::before {
         print-color-adjust        : exact;
     }
 
+    /* * {
+        animation: none !important;
+        transition: none !important;
+    } */
+
     /* 隱藏不需要列印的元素 */
     .export-buttons {
         display: none !important;
@@ -742,6 +747,8 @@ body::before {
     .images-gallery {
         width: 95% !important;
         gap: 0.6rem;
+        animation: none !important;
+        transition: none !important;
     }
 
     /* 高解析度文字渲染 */
@@ -780,6 +787,7 @@ body::before {
         image-rendering: pixelated;
         max-width      : 100%;
         height         : auto;
+        opacity: 1;
     }
 
     /* 避免分頁 */
@@ -789,7 +797,22 @@ body::before {
         gap : 1.5cqw;
         break-inside     : avoid;
         page-break-inside: avoid;
+        opacity: 1;
     }
+
+    .month-card{
+        aspect-ratio       : 1 / 1;
+    }
+
+    .months-grid {
+        animation: none !important;
+        transition: none !important;
+    }
+    /*.months-grid {
+        padding: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }*/
 
     /* 確保背景和邊框列印 */
     * {
