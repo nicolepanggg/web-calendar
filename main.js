@@ -8,7 +8,7 @@
             } else {
                 imageUrl = `background/${bgImage}`;
             }
-            const backgroundStyle = `url('${imageUrl}') center/cover, linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(238, 90, 36, 0.8) 50%, rgba(255, 159, 243, 0.8) 100%)`;
+            const backgroundStyle = `url('${imageUrl}'), linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(238, 90, 36, 0.8) 50%, rgba(255, 159, 243, 0.8) 100%)`;
             header.style.background = backgroundStyle;
         }
         // 動態載入資料夾中的圖片

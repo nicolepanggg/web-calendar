@@ -45,20 +45,22 @@ body::before {
 }
 
 .calendar-header {
-    background: url('bg/PhotoshopExtension_Image.png') center/cover,
-        linear-gradient(135deg, rgba(255, 107, 107, 0.8) 0%, rgba(238, 90, 36, 0.8) 50%, rgba(255, 159, 243, 0.8) 100%);
     color      : white;
     text-align : center;
     position   : relative;
     overflow   : hidden;
+    font-weight: bold;
     flex-shrink: 0;
     min-height : 10%;
     width      : 100%;
     padding-top: 2%;
     padding-bottom: 2%;
+    background-position: center !important;
+    background-size: 100% auto; 
+    background-repeat: repeat !important;
 }
 
-.calendar-header::before {
+/*.calendar-header::before {
     content   : '';
     position  : absolute;
     top       : -50%;
@@ -67,7 +69,7 @@ body::before {
     height    : 200%;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
     animation : float 6s ease-in-out infinite;
-}
+}*/
 
 @keyframes float {
 
@@ -95,12 +97,13 @@ body::before {
 .calendar-header h1 {
     margin                 : 0;
     font-size              : 2cqw;
-    font-weight            : 1000;
+    font-weight            : bolder;
+    /*-webkit-text-stroke: 0.8px rgb(0, 0, 0);
     background             : linear-gradient(45deg, #fff, #ffeb3b);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip        : text;
-    animation              : shine 3s ease-in-out infinite;
+    -webkit-text-fill-color: rgba(0,0,0,0);
+    background-clip        : text;*/
+    color                  : #ffeb3b;
 }
 
 @keyframes shine {
@@ -339,7 +342,7 @@ body::before {
     margin         : 20px auto 30px auto;
     flex-wrap      : wrap;
     justify-content: center;
-    max-width      : 1400px;
+    width      : 1400px;
     padding        : 0 20px;
 }
 
@@ -666,8 +669,8 @@ body::before {
 }
 
 .calendar-header {
-    padding-top: 1cqw;
-    padding-bottom: 1cqw;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .calendar-header h1 {
@@ -804,7 +807,7 @@ body::before {
         aspect-ratio       : 1 / 1;
     }
 
-    .months-grid {
+    .months-grid, .calendar-header h1 {
         animation: none !important;
         transition: none !important;
     }
