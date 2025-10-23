@@ -399,7 +399,7 @@
             '2026-05-01': '勞動節',
             '2026-05-26': '佛誕',
             '2026-06-16': '端午節',
-            '2026-07-01': '香港特別行政區成立紀念日',
+            '2026-07-01': '香港特區紀念日',
             '2026-10-01': '國慶日',
             '2026-10-06': '中秋節\n翌日',
             '2026-10-09': '重陽節',
@@ -444,7 +444,7 @@
                 // 預設漸層，只有用戶選擇顏色才覆蓋
                 let defaultGradient = 'linear-gradient(135deg, #ff740087 0%, #ff5900 100%)';
                 monthTitle.style.background = defaultGradient;
-                monthTitle.style.padding = '6px 8px';
+                // monthTitle.style.padding = '6px 8px';
                 monthTitle.style.borderRadius = '6px';
                 monthTitle.style.color = '#fff';
 
@@ -820,7 +820,7 @@
             const monthsGrid = document.getElementById('monthsGrid');
             if (!gallery || !monthsGrid) return;
             const count = gallery.querySelectorAll('img').length;
-            monthsGrid.style.paddingTop = (count > 10) ? '10px' : '30px';
+            monthsGrid.style.paddingTop = (count > 10) ? '10px' : '15px';
             // 新增：根據圖片數量調整寬度
             const imgs = gallery.querySelectorAll('img');
             const imgWidth = (count > 10) ? '8%' : '8%';

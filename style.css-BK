@@ -96,7 +96,6 @@ body::before {
 
 .calendar-header h1 {
     margin                 : 0;
-    font-size              : 2cqw;
     font-weight            : bolder;
     /*-webkit-text-stroke: 0.8px rgb(0, 0, 0);
     background             : linear-gradient(45deg, #fff, #ffeb3b);
@@ -453,15 +452,14 @@ body::before {
     transition         : all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position           : relative;
     overflow           : hidden;
-    /* display            : flex; */
+    display            : flex;
     flex-direction     : column;
     /* 月份卡片 4          :3 比例 */
-    /* aspect-ratio       : 1 / 1; */
+    aspect-ratio       : 1 / 1;
     /*width            : 100%;*/
     background-size    : cover;
     background-position: center;
     background-repeat  : no-repeat;
-    min-height         : 2.1rem;
     /* 動畫相關 */
     opacity            : 0;
     transform          : translateY(50px);
@@ -501,7 +499,7 @@ body::before {
     z-index : 2;
 }
 
-.month-card::before {
+/* .month-card::before {
     content   : '';
     position  : absolute;
     top       : 0;
@@ -510,10 +508,10 @@ body::before {
     height    : 100%;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
     transition: left 0.5s;
-}
+} */
 
 .month-card:hover {
-    transform : translateY(-12px) scale(2);
+    /* transform : translateY(-12px) scale(2); */
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.1);
     transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     scale     : 1.05;
@@ -543,7 +541,7 @@ body::before {
     display              : grid;
     grid-template-columns: repeat(7, 1fr);
     gap                  : 1px;
-    margin-bottom        : 3px;
+    /* margin-bottom        : 3px; */
     flex-shrink          : 0;
 }
 
@@ -675,7 +673,7 @@ body::before {
 }
 
 .calendar-header h1 {
-    font-size: 4rem;
+    font-size: 3rem;
 }
 
 .month-title {
@@ -716,7 +714,7 @@ body::before {
     }
 
     .calendar-header h1 {
-        font-size: 2rem;
+        font-size: 2rem !important;
     }
 
     .calendar-container {
@@ -757,16 +755,15 @@ body::before {
 
     /* 高解析度文字渲染 */
 
-
-    
-    .weekday, .day {
-        font-size: 0.8rem;
+    .month-title {
+        /* font-size: 1.2cqw; */
     }
     
     .month-title {
         -webkit-font-smoothing : antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering         : optimizeLegibility;
+        font-size: 0.8rem;
     }
 
     .day {
@@ -778,11 +775,19 @@ body::before {
     }
 
     .weekday {
-    font-size  : 0.6rem;
+        font-size: 0.6rem !important;
 }
 
+    .weekdays {
+        gap: 0 !important;
+    }
+
+    .weekday {
+        padding: 0 !important;
+    }
+
     .holiday-name {
-        font-size: 0.3rem;
+        font-size: 0.4rem;
     }
 
     /* 確保圖片高解析度列印 */
@@ -800,29 +805,22 @@ body::before {
     .content,
     .month-card,
     .months-grid {
-        gap : 0.5rem;
+         gap : 1rem;
         break-inside     : avoid;
         page-break-inside: avoid;
         opacity: 1;
     }
 
+    .month-card{
+        aspect-ratio       : 1 / 1 !important;
+    }
 
-    * {
+   * {
         animation: none !important;
         transition: none !important;
         opacity: 1 !important;
         transform: none !important;
     }
-
-    /* .months-grid, .calendar-header h1, .month-card.fade-in, .month-card {
-        animation: none !important;
-        transition: none !important;
-        opacity: 1 !important;
-        transform: none !important;
-    } */
-
-
-    
     /*.months-grid {
         padding: 0 !important;
         margin-top: 0 !important;
