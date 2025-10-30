@@ -820,7 +820,7 @@
             const monthsGrid = document.getElementById('monthsGrid');
             if (!gallery || !monthsGrid) return;
             const count = gallery.querySelectorAll('img').length;
-            monthsGrid.style.paddingTop = (count > 10) ? '10px' : '15px';
+            monthsGrid.style.paddingTop = (count > 10) ? '20px' : '20px';
             // 新增：根據圖片數量調整寬度
             const imgs = gallery.querySelectorAll('img');
             const imgWidth = (count > 10) ? '8%' : '8%';
