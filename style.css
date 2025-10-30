@@ -663,8 +663,8 @@ body::before {
 
 .months-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap                  : 2rem;
-    width                : 83%;
+    gap                  : 1.5rem;
+    width                : 78%;
     padding-top          : 30px;
     margin               : auto;
 }
@@ -800,14 +800,12 @@ body::before {
     .content,
     .month-card,
     .months-grid {
+        gap : 0.5rem;
         break-inside     : avoid;
         page-break-inside: avoid;
         opacity: 1;
     }
 
-    .months-grid {
-         gap : 0.8rem;
-    }
 
     * {
         animation: none !important;
