@@ -531,7 +531,7 @@
                 // 為每個月份卡片添加延遲的淡入動畫
                 setTimeout(() => {
                     monthCard.classList.add('fade-in');
-                }, month * 150); // 每個卡片延遲 150ms
+                }, month * 60); // 每個卡片延遲 80ms
             }
         }
 
